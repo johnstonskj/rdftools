@@ -1,0 +1,6 @@
+
+# return all the assert types in the model
+
+SELECT DISTINCT ?type WHERE { ?s a ?type }
+
+
