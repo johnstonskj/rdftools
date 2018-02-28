@@ -63,6 +63,8 @@ def add_args(parser):
 
 ```
 
+The results from `startup` are a standard logger and an `ArgumentParser` `Namespace` object. The tool can then use the functions `read`, `read_into`, `read_all`, `write`, and `query` to perform common operations on RDF files.
+
 ## References
 
 * [RDF Working Group](https://www.w3.org/2011/rdf-wg/wiki/Main_Page)
