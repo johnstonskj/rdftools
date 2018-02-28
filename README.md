@@ -8,7 +8,7 @@ The functionality is provided by RDFLib, and while that provides a set of comman
 
 The tooling uses a common starting command, `rdf`, that then executes sub-commands. As expected, the command has a help function and lists the supported sub-commands as _positional arguments_. These sub-commands also have their own help.
 
-```bash
+```
 $ rdf -h
 usage: rdf [-h] [-v] {validate,convert,select,query} ...
 
@@ -32,7 +32,7 @@ The currently supported sub-commands are as follows.
 
 An example, running a SPARQL query over a downloaded file is shown below.
 
-```bash
+```
 rdf query -i ~/social.n3 -r n3 -q "SELECT DISTINCT ?person ?topic WHERE { ?person <http://example.org/social/relationship/1.0/likes> ?topic. }"
 person                                         topic
 ============================================== =============================================
@@ -63,7 +63,7 @@ def add_args(parser):
 
 ```
 
-The results from `startup` are a standard logger and an `ArgumentParser` `Namespace` object. The tool can then use the functions `read`, `read_into`, `read_all`, `write`, and `query` to perform common operations on RDF files.
+The results from `startup` are a standard logger and an (`ArgumentParser`) `Namespace` object. The tool can then use the functions `read`, `read_into`, `read_all`, `write`, and `query` to perform common operations on RDF files.
 
 ## References
 
