@@ -19,7 +19,9 @@ def main():
     results = graph.query(cmd.query)
     end = timer()
     LOG.debug('rows: %d' % len(results))
-    columns = results.bindings[0].keys()
-    LOG.debug('columns: %s' % (', '.join([str(c) for c in columns])))
-
-    rdftools.report(columns, results,  end - start)
+    if len(results) >0:
+        columns = results.bindings[0].keys()
+        LOG.debug('columns: %s' % (', '.join([str(c) for c in columns])))
+        rdftools.report(columns, results,  end - start)
+    else:
+        LOG.info('Query returned no results.')
