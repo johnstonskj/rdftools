@@ -2,6 +2,7 @@
 
 import rdflib
 import sys
+from timeit import default_timer as timer
 
 import rdftools
 
@@ -16,11 +17,11 @@ def main():
     
     LOG.info('Executing query...')
     LOG.debug(cmd.query)
+    start = timer()
     results = graph.query(cmd.query)
+    end = timer()
     LOG.debug('rows: %d' % len(results))
     columns = results.bindings[0].keys()
     LOG.debug('columns: %s' % (', '.join([str(c) for c in columns])))
-    
-    for row in results:
-        for col in columns:
-            print('%s => %s' % (col, row[col]))
+
+    rdftools.report(columns, results,  end - start)

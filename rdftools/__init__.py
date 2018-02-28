@@ -84,3 +84,29 @@ def write(graph, output, format):
     else:
         __LOG__.info('writing to file %s, format is %s', output.name, format)
         graph.serialize(destination=output.name, format='nt')
+
+def get_terminal_width(default=80):
+    import shutil
+    return shutil.get_terminal_size((default,20))[0]
+
+def report(columns, rows, timer=0):
+    width = get_terminal_width()
+    col_width = int((width - len(columns)) / len(columns))
+    col_string = '{:' + str(col_width) + '}'
+    for column in columns:
+        print(col_string.format(column), end=" ")
+    print("")
+    
+    for column in columns:
+        print('=' * col_width, end=" ")
+    print("")
+
+    for row in rows:
+        for col in columns:
+            print(col_string.format(row[col]), end=" ")
+        print("")
+
+    if timer != 0:
+        print('%d rows returned in %f seconds.' % (len(rows), timer))
+    else:
+        print('%d rows returned.' % len(rows))
