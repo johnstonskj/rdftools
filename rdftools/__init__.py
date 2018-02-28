@@ -101,21 +101,24 @@ def get_terminal_width(default=80):
     import shutil
     return shutil.get_terminal_size((default,20))[0]
 
+HEADER_SEP = '='
+COLUMN_SEP = '|'
+
 def report(columns, rows, timer=0):
     width = get_terminal_width()
     col_width = int((width - len(columns)) / len(columns))
     col_string = '{:' + str(col_width) + '}'
     for column in columns:
-        print(col_string.format(column), end=" ")
+        print(col_string.format(column), end=COLUMN_SEP)
     print("")
     
     for column in columns:
-        print('=' * col_width, end=" ")
+        print(HEADER_SEP * col_width, end=COLUMN_SEP)
     print("")
 
     for row in rows:
         for col in columns:
-            print(col_string.format(row[col]), end=" ")
+            print(col_string.format(row[col]), end=COLUMN_SEP)
         print("")
 
     if timer != 0:
