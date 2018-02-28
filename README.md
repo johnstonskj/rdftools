@@ -33,7 +33,7 @@ The currently supported sub-commands are as follows.
 An example, running a SPARQL query over a downloaded file is shown below.
 
 ```
-rdf query -i ~/social.n3 -r n3 -q "SELECT DISTINCT ?person ?topic WHERE { ?person <http://example.org/social/relationship/1.0/likes> ?topic. }"
+$ rdf query -i ~/social.n3 -r n3 -q "SELECT DISTINCT ?person ?topic WHERE { ?person <http://example.org/social/relationship/1.0/likes> ?topic. }"
 person                                         topic
 ============================================== =============================================
 http://amazon.com/cprm/customers/1.0/Alice     http://amazon.com/cprm/entities/1.0/Diving
@@ -41,6 +41,10 @@ http://amazon.com/cprm/customers/1.0/Bob       http://amazon.com/cprm/entities/1
 http://amazon.com/cprm/customers/1.0/Alice     http://amazon.com/cprm/entities/1.0/Shoes
 3 rows returned in 1.629622 seconds.
 ```
+
+## Debugging
+
+The `-v` parameter to either `rdf` or one of the sub-commands controls the standard Python logging level. It can be stated multiple times to increase the logging; `-v` for warnings, `-vv` for informational, `-vvv` for debug.
 
 ## Extending
 
