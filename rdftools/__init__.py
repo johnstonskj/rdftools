@@ -2,6 +2,7 @@ import argparse
 import logging
 import rdflib
 import sys
+from timeit import default_timer as timer
 
 __FORMAT__ = '%(asctime)-15s %(module)s.%(funcName)s %(lineno)d [%(levelname)s] - %(message)s'
 __LOG__ = None
@@ -46,6 +47,7 @@ def configure_logging(name, level):
     return logger
 
 def read_into(input, format, graph, base=None):
+    start = end = 0
     if format is None:
         if input is None:
             format = FORMATS[0]
@@ -53,11 +55,15 @@ def read_into(input, format, graph, base=None):
             format = rdflib.util.guess_format(input.name)
     if input is None:
         __LOG__.info('reading from STDIN, format is %s',format)
+        start = timer()
         graph.parse(source=sys.stdin.buffer, format=format, publicID=base)
+        end = timer()
     else:
         __LOG__.info('reading from file %s, format is %s', input.name, format)
+        start = timer()
         graph.parse(source=input.name, format=format, publicID=base)
-    __LOG__.info("Graph has %s statements." % len(graph))
+        end = timer()
+    __LOG__.info("Graph has %s statements, read in %f seconds." % (len(graph), end - start))
     return graph
     
 def read(input, format, base=None):
@@ -71,19 +77,25 @@ def read_all(inputs, format, base=None):
     return graph
 
 def write(graph, output, format):
-    __LOG__.debug('writing graph=%s, output=%s, format=%s', graph, output, format)
+    __LOG__.debug('writing graph=%s, %d statements.' % (graph, len(graph)))
+    start = end = 0
     if format is None:
         if output is None:
             format = FORMATS[0]
         else:
             format = rdflib.util.guess_format(output.name)
     if output is None:
-        __LOG__.info('writing to STDOUT, format is %s', format)
+        __LOG__.info('writing to STDOUT, format is %s' % format)
+        start = timer()
         data = graph.serialize(format=format)
+        end = timer()
         sys.stdout.buffer.write(data)
     else:
-        __LOG__.info('writing to file %s, format is %s', output.name, format)
+        __LOG__.info('writing to file %s, format is %s' %  (output.name, format))
+        start = timer()
         graph.serialize(destination=output.name, format='nt')
+        end = timer()
+    __LOG__.debug('write took %f seconds.' % (end - start)) 
 
 def get_terminal_width(default=80):
     import shutil
