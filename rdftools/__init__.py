@@ -9,9 +9,9 @@ __LOG__ = None
 
 FORMATS = ['nt', 'n3', 'trix', 'rdfa', 'xml']
 
-def startup(add_args):
+def startup(description, add_args):
     global __LOG__
-    parser = configure_argparse('RDF file format converter')
+    parser = configure_argparse(description)
     if callable(add_args):
         parser = add_args(parser)
     command = parser.parse_args()

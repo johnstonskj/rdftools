@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import rdflib
 
 import rdftools
@@ -13,7 +11,7 @@ def add_args(parser):
     return parser
 
 def main():
-    (LOG, cmd) = rdftools.startup(add_args)
+    (LOG, cmd) = rdftools.startup('RDF simple select.', add_args)
     
     graph = rdftools.read_all(cmd.input, cmd.read)
     

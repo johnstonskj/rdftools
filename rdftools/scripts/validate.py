@@ -1,11 +1,9 @@
-#!/usr/bin/env python
-
 import sys
 
 import rdftools
 
 def main():
-    (LOG, cmd) = rdftools.startup(add_args=None)
+    (LOG, cmd) = rdftools.startup('RDF file validator.', add_args=None)
 
     for input in cmd.input:
         LOG.info('Validating file %s' % input)
