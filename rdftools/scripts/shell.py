@@ -162,22 +162,25 @@ add_command(close)
 def context(context, ignored):
     """ context
         Display the current context."""
-    print('BASE %s' % context['base'])
+    if not context['base'] is None:
+        print('BASE %s' % context['base'])
     for (pre, uri) in context['graph'].namespaces():
         print('PREFIX %s: %s' % (pre, uri))
     print('')
-    print('Graph       ID %s' % context['graph']._Graph__identifier)
-    print('         store %s' % context['graph']._Graph__store)
-    print('context aware? %s' % context['graph'].context_aware)
-    print('formula aware? %s' % context['graph'].formula_aware)
-    print('default union? %s' % context['graph'].default_union)
+    print('Graph        ID %s' % context['graph']._Graph__identifier)
+    print('|         store %s' % context['graph']._Graph__store)
+    print('|          size %d statements' % len(context['graph']))
+    print('|context aware? %s' % context['graph'].context_aware)
+    print('|formula aware? %s' % context['graph'].formula_aware)
+    print('|default union? %s' % context['graph'].default_union)
     print('')
     return context
 add_command(context)
 
 def clear(context, args):
-    """ clear [base | prefix pre: URI]
+    """ clear [base | prefix pre:]
         Clear the current context."""
+    # TODO: clear base/prefix
     return {'base': None, 'graph': rdflib.Graph()}
 add_command(clear)
 
@@ -230,13 +233,15 @@ def configure_readline():
     except IOError as e:
         print('readline configuration exception: %s' % e)
 
-def parse_rcfile(context):
-    rcfile = os.path.join(os.path.expanduser("~"), ".rdfshrc")
-    if os.path.exists(rcfile):
-        file = open(rcfile, 'rt')
+def parse_cmdfile(context, filename):
+    if os.path.exists(filename):
+        print('reading commands from file %s' % filename)
+        file = open(filename, 'rt')
         for line in file:
             parse_input_line(context, line)
         file.close()
+    else:
+        print('file named %s does not exist' % filename)
 
 def parse_input_line(context, line):
     line = line.strip()
@@ -270,9 +275,11 @@ def run_loop(context):
 
 
 def main():
+    global LOG
     (LOG, cmd) = rdftools.startup('RDF/SPARQL shell.', add_args=None)
     print(WELCOME)
     configure_readline()
     context = clear(None, None)
-    parse_rcfile(context)
+    context['base'] = cmd.base
+    parse_cmdfile(context, os.path.join(os.path.expanduser("~"), ".rdfshrc"))
     run_loop(context)
