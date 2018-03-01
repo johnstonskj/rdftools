@@ -104,6 +104,20 @@ def serialize(context, args):
     return context
 add_command(serialize)
 
+def show(context, args):
+    """ show format=n3
+        Display current context graph in format."""
+    args2 = args.strip().split()
+    format = 'n3'
+    if len(args2) == 1:
+        format = args2[0].strip()
+        if not format in rdftools.FORMATS:
+            print('format %s, not known' % format)
+            format = 'n3'
+    rdftools.write(context['graph'], None, format)
+    return context
+add_command(show)
+
 def query(context, args):
     """ query sparql
         Run SPARQL query."""
@@ -266,7 +280,7 @@ def run_loop(context):
         try:
             input_line = input(PROMPT)
             if input_line.strip() == 'exit':
-                close(context, None)
+# later                close(context, None)
                 clear(context, None)
                 sys.exit(0)
             context = parse_input_line(context, input_line)

@@ -28,6 +28,7 @@ The currently supported sub-commands are as follows.
 * `convert` - convert files between different RDF representations (NTriples, Notation3, XML, ...).
 * `query` - execute SPARQL queries over RDF files.
 * `select` - simple projections from RDF files.
+* `shell` - run an interactive shell session.
 * `validate` - validate an RDF file.
 
 An example, running a SPARQL query over a downloaded file is shown below.
@@ -45,6 +46,28 @@ http://amazon.com/cprm/customers/1.0/Alice     http://amazon.com/cprm/entities/1
 ## Debugging
 
 The `-v` parameter to either `rdf` or one of the sub-commands controls the standard Python logging level. It can be stated multiple times to increase the logging; `-v` for warnings, `-vv` for informational, `-vvv` for debug.
+
+## Interactive Shell
+
+For a more interactive exploration of RDF data you can run `rdf shell` which gives you access to a lot of the same functions in the separate tools. The shell has a single common graph into which you can load data from external files (and stores in the future), and run SPARQL queries. The shell also has a default initialization file, so commonly used prefixes, common data, etc. can be loaded before you start your session.
+
+```
+$ rdf shell
+RDF Shell, v0.1.0.
+reading commands from file /Users/simonjo/.rdfshrc
+Graph updated with 40 statements.
+>
+```
+
+As you might expect, the shell supports a `help` function and command completion as well as a persistent history. 
+
+### Initialization File
+
+The default location for this is `~/.rdfshrc`, all commands are read as if you typed them into the shell.
+
+### History File
+
+The default location for this is `~/.rdfsh_hist`, it will be read at startup and updated on closing the shell.
 
 ## Extending
 
