@@ -4,14 +4,15 @@ import rdflib
 import sys
 from timeit import default_timer as timer
 
-__FORMAT__ = '%(asctime)-15s %(module)s.%(funcName)s %(lineno)d [%(levelname)s] - %(message)s'
+__VERSION__ = '0.1.0'
+
 __LOG__ = None
 
-FORMATS = ['nt', 'n3', 'trix', 'rdfa', 'xml']
+FORMATS = ['nt', 'n3', 'turtle', 'rdfa', 'xml', 'pretty-xml']
 
-def startup(description, add_args):
+def startup(description, add_args, read_files=True):
     global __LOG__
-    parser = configure_argparse(description)
+    parser = configure_argparse(description, read_files)
     if callable(add_args):
         parser = add_args(parser)
     command = parser.parse_args()
@@ -20,19 +21,18 @@ def startup(description, add_args):
     __LOG__.info('%s started.', process)
     return (__LOG__, command)
     
-def configure_argparse(description):
+def configure_argparse(description, read_files=True):
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('-v', '--verbose', default=0, action='count')
     parser.add_argument('-b', '--base', action='store')
-    parser.add_argument('-i', '--input', type=argparse.FileType('r'), nargs='*')
-    parser.add_argument('-r', '--read', action='store', choices=FORMATS)
-    # return argparse.ArgumentParser(parents=[parser])
-    # implies parent specifies add_help=False
+    if read_files:
+        parser.add_argument('-i', '--input', type=argparse.FileType('r'), nargs='*')
+        parser.add_argument('-r', '--read', action='store', choices=FORMATS)
     return parser
 
 def configure_logging(name, level):
     global __LOG__
-    logging.basicConfig(format=__FORMAT__)
+    logging.basicConfig(format='%(asctime)-15s %(module)s.%(funcName)s %(lineno)d [%(levelname)s] - %(message)s')
     logger = logging.getLogger(name)
     if level > 2:
         logger.setLevel(logging.DEBUG)

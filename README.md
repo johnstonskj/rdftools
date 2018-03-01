@@ -15,7 +15,7 @@ usage: rdf [-h] [-v] {validate,convert,select,query} ...
 RDF tool
 
 positional arguments:
-  {validate,convert,select,query}
+  {validate,convert,select,shell,query}
   subargs
 
 optional arguments:

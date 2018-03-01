@@ -3,7 +3,6 @@ from collections import namedtuple
 import rdflib
 import os
 import os.path
-import pprint
 import readline
 import subprocess
 import sys
@@ -11,9 +10,25 @@ from timeit import default_timer as timer
 
 import rdftools
 
-WELCOME = 'RDF Shell, v0.1.0.'
+WELCOME = 'RDF Tools shell. Version %s' % rdftools.__VERSION__
 COMMANDS = {}
 
+def info(text):
+    print(text)
+
+def warning(text):
+    print('Warning. %s' % text)
+
+def error(text):
+    print('Error. %s' % text)
+
+def exception(text, ex=None):
+    if ex is None:
+        error('%s %s: %s' % (text, sys.exc_info()[0], sys.exc_info()[1]))
+        #LOG.exception(sys.exc_info()[2])
+    else:
+        error('%s. %s' % (text, ex))
+    
 def add_command(command, name=None):
     if name is None:
         name = command.__name__
@@ -32,13 +47,13 @@ def base(context, args):
     args2 = args.strip().split()
     if len(args2) == 0:
         if not context['base'] is None:
-            print('BASE %s' % context['base'])
+            info('BASE %s' % context['base'])
     elif len(args2) >= 1:
         uri = args2[0].strip()
         if uri.startswith('<') and uri.endswith('>'):
             context['base'] = uri
         else:
-            print('URI must be enclosed in <>')
+            warning('URI must be enclosed in <>')
     return context
 add_command(base)
 
@@ -48,7 +63,7 @@ def prefix(context, args):
     args2 = args.strip().split()
     if len(args2) == 0:
         for (pre, uri) in context['graph'].namespaces():
-            print('PREFIX %s: %s' % (pre, uri))
+            info('PREFIX %s: %s' % (pre, uri))
     elif len(args2) == 2:
         pre = args2[0].strip()
         if pre.endswith(':'):
@@ -56,9 +71,9 @@ def prefix(context, args):
             uri = args2[1].strip()
             context['graph'].bind(pre, uri)
         else:
-            print('prefix must end with ":"')
+            warning('prefix must end with ":"')
     else:
-        print('expecting 2 arguments')            
+        warning('expecting 2 arguments')            
     return context
 add_command(prefix)
 
@@ -72,15 +87,15 @@ def parse(context, args):
     if len(args2) >= 2:
         format = args2[1].strip()
         if not format in rdftools.FORMATS:
-            print('format %s, not known!' % format)
+            warning('format %s, not known!' % format)
     if len(args2) >= 1:
         try:
             context['graph'] = rdftools.read_into(SimpleFile(args2[0]), format, context['graph'], context['base'])
-            print('Graph updated with %d statements.' % len(context['graph']))
+            info('Graph updated with %d statements.' % len(context['graph']))
         except:
-            print("Unexpected error:", sys.exc_info()[1])
+            exception('Parsing error')
     else:
-        print('invalid parameters')
+        warning('invalid parameters')
     return context
 add_command(parse)
 
@@ -92,15 +107,15 @@ def serialize(context, args):
     if len(args2) >= 2:
         format = args2[1].strip()
         if not format in rdftools.FORMATS:
-            print('format %s, not known!' % format)
+            warning('format %s, not known!' % format)
     if len(args2) >= 1:
         try:
             rdftools.write(context['graph'], SimpleFile(args2[0]), format)
-            print('file %s written' % args2[0])
+            info('file %s written' % args2[0])
         except:
-            print("Unexpected error:", sys.exc_info()[1])
+            exception("Unexpected error:")
     else:
-        print('invalid parameters')
+        warning('invalid parameters')
     return context
 add_command(serialize)
 
@@ -112,7 +127,7 @@ def show(context, args):
     if len(args2) == 1:
         format = args2[0].strip()
         if not format in rdftools.FORMATS:
-            print('format %s, not known' % format)
+            warning('format %s, not known' % format)
             format = 'n3'
     rdftools.write(context['graph'], None, format)
     return context
@@ -131,15 +146,15 @@ def query(context, args):
                 columns = results.bindings[0].keys()
                 rdftools.report(columns, results,  end - start)
             else:
-                print('select returned no results.')
+                info('select returned no results.')
         elif sparql[:3].upper() == 'ASK':
-            print('ask returned %s.' % bool(results))
+            info('ask returned %s.' % bool(results))
         # construct and describe return statements
         # update returns?
         else:
-            print(results);
+            prininfo(results);
     else:
-        print('no query (SELECT, ASK, DESCRIBE, CONSTRUCT, UPDATE) specified!')
+        warning('no query (SELECT, ASK, DESCRIBE, CONSTRUCT, UPDATE) specified!')
     return context
 add_command(query)
 
@@ -147,7 +162,7 @@ def subjects(context, ignored):
     """ subjects
         Display subjects in current context."""
     for s in set(context['graph'].subjects()):
-        print(s)
+        info(s)
     return context
 add_command(subjects)
 
@@ -155,21 +170,21 @@ def predicates(context, ignored):
     """ predicates
         Display predicates in current context."""
     for p in set(context['graph'].predicates()):
-        print(p)
+        info(p)
     return context
 add_command(predicates)
 
 def connect(context, uri):
     """ connect URI
         Connect to a store (TBD)."""
-    print('TODO: finish me')
+    warning('TODO: finish me')
     return context
 add_command(connect)
 
 def close(context, ignored):
     """ close
         Close the current store connection, if one exists."""
-    print('TODO: finish me')
+    warning('TODO: finish me')
     return context
 add_command(close)
 
@@ -177,17 +192,17 @@ def context(context, ignored):
     """ context
         Display the current context."""
     if not context['base'] is None:
-        print('BASE %s' % context['base'])
+        info('BASE %s' % context['base'])
     for (pre, uri) in context['graph'].namespaces():
-        print('PREFIX %s: %s' % (pre, uri))
-    print('')
-    print('Graph        ID %s' % context['graph']._Graph__identifier)
-    print('|         store %s' % context['graph']._Graph__store)
-    print('|          size %d statements' % len(context['graph']))
-    print('|context aware? %s' % context['graph'].context_aware)
-    print('|formula aware? %s' % context['graph'].formula_aware)
-    print('|default union? %s' % context['graph'].default_union)
-    print('')
+        info('PREFIX %s: %s' % (pre, uri))
+    info('')
+    info('Graph        ID %s' % context['graph']._Graph__identifier)
+    info('|         store %s' % context['graph']._Graph__store)
+    info('|          size %d statements' % len(context['graph']))
+    info('|context aware? %s' % context['graph'].context_aware)
+    info('|formula aware? %s' % context['graph'].formula_aware)
+    info('|default union? %s' % context['graph'].default_union)
+    info('')
     return context
 add_command(context)
 
@@ -215,9 +230,9 @@ def help(context, args):
     for cmd in keys:
         text = COMMANDS[cmd].__doc__
         if text is None:
-            print(' %s' % cmd)
+            info(' %s' % cmd)
         else:
-            print(text)
+            info(text)
     return context
 add_command(help)
 
@@ -226,6 +241,13 @@ def exit(context, args):
         Exit the shell."""
     pass
 add_command(exit)
+
+def echo(context, args):
+    """ echo text
+        Echo back the following text."""
+    info(args)
+    return context
+add_command(echo)
 
 def prompt(context, args):
     """ prompt text
@@ -245,17 +267,17 @@ def configure_readline():
         readline.read_history_file(histfile)
         atexit.register(readline.write_history_file, histfile)
     except IOError as e:
-        print('readline configuration exception: %s' % e)
+        exception('readline configuration exception', e)
 
 def parse_cmdfile(context, filename):
     if os.path.exists(filename):
-        print('reading commands from file %s' % filename)
+        info('reading commands from file %s' % filename)
         file = open(filename, 'rt')
         for line in file:
             parse_input_line(context, line)
         file.close()
     else:
-        print('file named %s does not exist' % filename)
+        warning('file named %s does not exist' % filename)
 
 def parse_input_line(context, line):
     line = line.strip()
@@ -270,7 +292,7 @@ def parse_input_line(context, line):
         if cmd in COMMANDS:
             context = COMMANDS[cmd](context, line)
         else:
-            print('Unknown command: %s' % cmd)
+            warning('Unknown command: %s' % cmd)
     return context
 
 PROMPT = '> '
@@ -290,8 +312,8 @@ def run_loop(context):
 
 def main():
     global LOG
-    (LOG, cmd) = rdftools.startup('RDF/SPARQL shell.', add_args=None)
-    print(WELCOME)
+    (LOG, cmd) = rdftools.startup('RDF/SPARQL shell.', add_args=None, read_files=False)
+    info(WELCOME)
     configure_readline()
     context = clear(None, None)
     context['base'] = cmd.base
