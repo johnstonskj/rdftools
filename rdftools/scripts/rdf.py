@@ -3,7 +3,7 @@ from subprocess import call
 
 import rdftools
 
-COMMANDS = ['validate', 'convert', 'select', 'query']
+COMMANDS = ['validate', 'convert', 'select', 'shell', 'query']
 
 def commands():
     import argparse

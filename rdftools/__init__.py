@@ -76,7 +76,7 @@ def read_all(inputs, format, base=None):
         graph = read_into(input, format, graph, base)
     return graph
 
-def write(graph, output, format):
+def write(graph, output, format, base=None):
     __LOG__.debug('writing graph=%s, %d statements.' % (graph, len(graph)))
     start = end = 0
     if format is None:
@@ -87,13 +87,13 @@ def write(graph, output, format):
     if output is None:
         __LOG__.info('writing to STDOUT, format is %s' % format)
         start = timer()
-        data = graph.serialize(format=format)
+        data = graph.serialize(format=format, base=base)
         end = timer()
         sys.stdout.buffer.write(data)
     else:
         __LOG__.info('writing to file %s, format is %s' %  (output.name, format))
         start = timer()
-        graph.serialize(destination=output.name, format='nt')
+        graph.serialize(destination=output.name, format=format, base=base)
         end = timer()
     __LOG__.debug('write took %f seconds.' % (end - start)) 
 

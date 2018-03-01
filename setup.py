@@ -49,6 +49,7 @@ setup(
             'rdf-convert=rdftools.scripts.convert:main',
             'rdf-query=rdftools.scripts.query:main',
             'rdf-select=rdftools.scripts.select:main',
+            'rdf-shell=rdftools.scripts.shell:main',
             'rdf-validate=rdftools.scripts.validate:main',
         ],
     }
