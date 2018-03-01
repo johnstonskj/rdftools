@@ -92,6 +92,17 @@ def add_args(parser):
 
 The results from `startup` are a standard logger and an (`ArgumentParser`) `Namespace` object. The tool can then use the functions `read`, `read_into`, `read_all`, `write`, and `query` to perform common operations on RDF files.
 
+Extending the shell is also pretty simple, you add a function of the following form, it always takes a context object first, and the doc string will be used by default as the displayed help for your command. Arguments may be parsed for more structure, and `print()` is used extensively for user feedback. Note that you must always return the context, whether you updated it or not. The `add_command` function will install it into the shell, enabling help and command completion.
+
+```python
+def echo(context, args):
+    """ echo text
+        Echo back the following text."""
+    print(args)
+    return context
+add_command(echo)
+```
+
 ## References
 
 * [RDF Working Group](https://www.w3.org/2011/rdf-wg/wiki/Main_Page)
