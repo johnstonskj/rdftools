@@ -4,11 +4,16 @@ python:
     - "3.4"
     - "3.5"
     - "3.6"
-before_install:
-    - pip install pytest pytest-cov pytest-pep8 pytest-catchlog
+install:
+    - pip install --default-timeout 60 -r requirements.txt
+    - pip install --default-timeout 60 coverage coveralls nose-timer && export HAS_COVERALLS=1
+    - python setup.py install
+    - pip install 
 script:
     - flake8 rdftools
     - pytest --cov=divelog test/
+after_success:
+    - coveralls
 branches:
   only:
     - master
