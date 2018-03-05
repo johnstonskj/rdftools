@@ -1,0 +1,14 @@
+language: python
+python:
+    - "3.3"
+    - "3.4"
+    - "3.5"
+    - "3.6"
+before_install:
+    - pip install pytest pytest-cov pytest-pep8 pytest-catchlog
+script:
+    - flake8 rdftools
+    - pytest --cov=divelog test/
+branches:
+  only:
+    - master
