@@ -4,6 +4,8 @@ This package consists of a set of command-line tools that do interesting things 
 
 The functionality is provided by RDFLib, and while that provides a set of commands those provided here are somewhat more extensive and also based upon a common command framework that can be extended easily for more cases.
 
+![Travis Status](https://travis-ci.org/johnstonskj/rdftools.svg)
+
 ## Usage
 
 The tooling uses a common starting command, `rdf`, that then executes sub-commands. As expected, the command has a help function and lists the supported sub-commands as _positional arguments_. These sub-commands also have their own help.
