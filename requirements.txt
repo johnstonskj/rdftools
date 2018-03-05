@@ -1,4 +1,6 @@
+flake8>=3.5
 pytest>=3.0
 pytest-cov>2.5
+pytest-catchlog>=1.2
 coverage>3.7
 coveralls>1.1

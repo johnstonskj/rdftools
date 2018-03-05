@@ -6,7 +6,6 @@ python:
     - "3.6"
 install:
     - pip install --default-timeout 60 -r requirements.txt
-    - pip install --default-timeout 60 coverage coveralls nose-timer && export HAS_COVERALLS=1
 script:
     - flake8 rdftools
     - pytest --cov=divelog test/
