@@ -13,34 +13,55 @@ import rdftools
 WELCOME = 'RDF Tools shell. Version %s' % rdftools.__VERSION__
 COMMANDS = {}
 
+
 def info(text):
     print(text)
+
 
 def warning(text):
     print('Warning. %s' % text)
 
+
 def error(text):
     print('Error. %s' % text)
+
 
 def exception(text, ex=None):
     if ex is None:
         error('%s %s: %s' % (text, sys.exc_info()[0], sys.exc_info()[1]))
-        #LOG.exception(sys.exc_info()[2])
+        # LOG.exception(sys.exc_info()[2])
     else:
         error('%s. %s' % (text, ex))
-    
-def add_command(command, name=None):
-    if name is None:
-        name = command.__name__
-    COMMANDS[name] = command
+
+
+def command(name_or_func):
+    cmdname = None
+
+    def decorator(func):
+        COMMANDS[cmdname] = func
+
+        def wrapper(context, args):
+            return func(context, args)
+        return wrapper
+
+    if callable(name_or_func):
+        cmdname = name_or_func.__name__
+        return decorator(name_or_func)
+    else:
+        cmdname = name_or_func
+        return decorator
+
 
 def command_completer(text, index):
-    possibles = [command for command in COMMANDS.keys() if command.startswith(text)]
+    possibles = [command for command in COMMANDS.keys()
+                 if command.startswith(text)]
     if index < len(possibles):
         return possibles[index]
     else:
         return None
 
+
+@command
 def base(context, args):
     """ base [URI]
         Set the base URI to be used when parsing model files."""
@@ -55,8 +76,9 @@ def base(context, args):
         else:
             warning('URI must be enclosed in <>')
     return context
-add_command(base)
 
+
+@command
 def prefix(context, args):
     """ prefix [pre: URI]
         Set a prefix to represent a URI."""
@@ -67,18 +89,21 @@ def prefix(context, args):
     elif len(args2) == 2:
         pre = args2[0].strip()
         if pre.endswith(':'):
-            pre = pre[:-1] # TODO check for ''?
+            # TODO check for '?'
+            pre = pre[:-1]
             uri = args2[1].strip()
             context['graph'].bind(pre, uri)
         else:
             warning('prefix must end with ":"')
     else:
-        warning('expecting 2 arguments')            
+        warning('expecting 2 arguments')
     return context
-add_command(prefix)
+
 
 SimpleFile = namedtuple('SimpleFile', ['name'])
 
+
+@command
 def parse(context, args):
     """ parse filename [format=n3]
         Read a file into the current context graph."""
@@ -86,19 +111,22 @@ def parse(context, args):
     format = 'n3'
     if len(args2) >= 2:
         format = args2[1].strip()
-        if not format in rdftools.FORMATS:
+        if format not in rdftools.FORMATS:
             warning('format %s, not known!' % format)
     if len(args2) >= 1:
         try:
-            context['graph'] = rdftools.read_into(SimpleFile(args2[0]), format, context['graph'], context['base'])
+            context['graph'] = rdftools.read_into(
+                SimpleFile(args2[0]), format,
+                context['graph'], context['base'])
             info('Graph updated with %d statements.' % len(context['graph']))
-        except:
+        except:  # noqa: E722
             exception('Parsing error')
     else:
         warning('invalid parameters')
     return context
-add_command(parse)
 
+
+@command
 def serialize(context, args):
     """ serialize filename [format=n3]
         Write the current context graph into a file."""
@@ -106,19 +134,20 @@ def serialize(context, args):
     format = 'n3'
     if len(args2) >= 2:
         format = args2[1].strip()
-        if not format in rdftools.FORMATS:
+        if format not in rdftools.FORMATS:
             warning('format %s, not known!' % format)
     if len(args2) >= 1:
         try:
             rdftools.write(context['graph'], SimpleFile(args2[0]), format)
             info('file %s written' % args2[0])
-        except:
+        except:  # noqa: E722
             exception("Unexpected error:")
     else:
         warning('invalid parameters')
     return context
-add_command(serialize)
 
+
+@command
 def show(context, args):
     """ show format=n3
         Display current context graph in format."""
@@ -126,13 +155,17 @@ def show(context, args):
     format = 'n3'
     if len(args2) == 1:
         format = args2[0].strip()
-        if not format in rdftools.FORMATS:
+        if format not in rdftools.FORMATS:
             warning('format %s, not known' % format)
             format = 'n3'
     rdftools.write(context['graph'], None, format)
     return context
-add_command(show)
 
+
+QUERY_FORMS = ['SELECT', 'ASK', 'DESCRIBE', 'CONSTRUCT', 'UPDATE']
+
+
+@command
 def query(context, args):
     """ query sparql
         Run SPARQL query."""
@@ -152,42 +185,52 @@ def query(context, args):
         # construct and describe return statements
         # update returns?
         else:
-            prininfo(results);
+            info(results)
     else:
-        warning('no query (SELECT, ASK, DESCRIBE, CONSTRUCT, UPDATE) specified!')
+        warning('no valid query specified (%s)',
+                ', '.join(QUERY_FORMS))
     return context
-add_command(query)
 
+
+@command
 def subjects(context, ignored):
     """ subjects
         Display subjects in current context."""
     for s in set(context['graph'].subjects()):
         info(s)
     return context
-add_command(subjects)
 
+
+@command
 def predicates(context, ignored):
     """ predicates
         Display predicates in current context."""
     for p in set(context['graph'].predicates()):
         info(p)
     return context
-add_command(predicates)
 
+
+@command
 def connect(context, uri):
     """ connect URI
         Connect to a store (TBD)."""
     warning('TODO: finish me')
     return context
-add_command(connect)
 
+
+def is_open(context):
+    return False
+
+
+@command
 def close(context, ignored):
     """ close
         Close the current store connection, if one exists."""
     warning('TODO: finish me')
     return context
-add_command(close)
 
+
+@command
 def context(context, ignored):
     """ context
         Display the current context."""
@@ -204,22 +247,25 @@ def context(context, ignored):
     info('|default union? %s' % context['graph'].default_union)
     info('')
     return context
-add_command(context)
 
+
+@command
 def clear(context, args):
     """ clear [base | prefix pre:]
         Clear the current context."""
     # TODO: clear base/prefix
     return {'base': None, 'graph': rdflib.Graph()}
-add_command(clear)
 
+
+@command('!')
 def exec_command(context, args):
     """ ! [command]
         Execute a command in a sub-shell."""
     subprocess.call(args, shell=True)
     return context
-add_command(exec_command, '!')
 
+
+@command
 def help(context, args):
     """ help [command]
         Display help on built-in shell commands."""
@@ -234,33 +280,37 @@ def help(context, args):
         else:
             info(text)
     return context
-add_command(help)
 
+
+@command
 def exit(context, args):
     """ exit
         Exit the shell."""
     pass
-add_command(exit)
 
+
+@command
 def echo(context, args):
     """ echo text
         Echo back the following text."""
     info(args)
     return context
-add_command(echo)
 
+
+@command
 def prompt(context, args):
     """ prompt text
         Set the prompt used in the shell."""
     global PROMPT
     PROMPT = args + ' '
     return context
-add_command(prompt)
+
 
 def configure_readline():
     histfile = os.path.join(os.path.expanduser("~"), ".rdfsh_hist")
     if not os.path.exists(histfile):
-        with open(histfile, 'w'): pass    
+        with open(histfile, 'w'):
+            pass
     try:
         readline.set_completer(command_completer)
         readline.parse_and_bind("tab: complete")
@@ -268,6 +318,7 @@ def configure_readline():
         atexit.register(readline.write_history_file, histfile)
     except IOError as e:
         exception('readline configuration exception', e)
+
 
 def parse_cmdfile(context, filename):
     if os.path.exists(filename):
@@ -278,6 +329,7 @@ def parse_cmdfile(context, filename):
         file.close()
     else:
         warning('file named %s does not exist' % filename)
+
 
 def parse_input_line(context, line):
     line = line.strip()
@@ -295,14 +347,17 @@ def parse_input_line(context, line):
             warning('Unknown command: %s' % cmd)
     return context
 
+
 PROMPT = '> '
+
 
 def run_loop(context):
     while True:
         try:
             input_line = input(PROMPT)
             if input_line.strip() == 'exit':
-# later                close(context, None)
+                if is_open(context):
+                    close(context, None)
                 clear(context, None)
                 sys.exit(0)
             context = parse_input_line(context, input_line)
@@ -312,7 +367,8 @@ def run_loop(context):
 
 def main():
     global LOG
-    (LOG, cmd) = rdftools.startup('RDF/SPARQL shell.', add_args=None, read_files=False)
+    (LOG, cmd) = rdftools.startup('RDF/SPARQL shell.',
+                                  add_args=None, read_files=False)
     info(WELCOME)
     configure_readline()
     context = clear(None, None)

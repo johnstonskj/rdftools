@@ -9,11 +9,10 @@ from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
 from os import path
-
-here = path.abspath(path.dirname(__file__))
-
 # Get version from module
 import rdftools
+
+here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
@@ -42,7 +41,7 @@ setup(
     keywords='development, RDF',
     packages=find_packages(exclude=['data', 'docs', 'tests']),
     install_dependencies=['rdflib'],
-       extras_require={  # Optional
+    extras_require={  # Optional
         'dev': ['check-manifest'],
         'test': ['coverage'],
     },
