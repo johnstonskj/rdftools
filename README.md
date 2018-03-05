@@ -4,7 +4,9 @@ This package consists of a set of command-line tools that do interesting things 
 
 The functionality is provided by RDFLib, and while that provides a set of commands those provided here are somewhat more extensive and also based upon a common command framework that can be extended easily for more cases.
 
-![Travis Status](https://travis-ci.org/johnstonskj/rdftools.svg)
+[![Travis Status](https://travis-ci.org/johnstonskj/rdftools.svg?branch=master)](https://travis-ci.org/johnstonskj/rdftools)
+[![Coverage Status](https://coveralls.io/repos/github/johnstonskj/rdftools/badge.svg?branch=master)](https://coveralls.io/github/johnstonskj/rdftools?branch=master)
+[![GitHub stars](https://img.shields.io/github/stars/RDFLib/rdflib.svg)](https://github.com/RDFLib/rdflib/stargazers)
 
 ## Usage
 
