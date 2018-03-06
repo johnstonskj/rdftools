@@ -6,9 +6,14 @@ The functionality is provided by RDFLib, and while that provides a set of comman
 
 [![Travis Status](https://travis-ci.org/johnstonskj/rdftools.svg?branch=master)](https://travis-ci.org/johnstonskj/rdftools)
 [![Coverage Status](https://coveralls.io/repos/github/johnstonskj/rdftools/badge.svg?branch=master)](https://coveralls.io/github/johnstonskj/rdftools?branch=master)
+[![Requirements](https://requires.io/github/johnstonskj/rdftools/requirements.svg?branch=master)](https://requires.io/github/johnstonskj/rdftools/requirements/?branch=master)
+<!--
+[![Doc Status](https://readthedocs.org/projects/rdftools/badge/?style=flat)](https://readthedocs.org/projects/rdftools)
+-->
 [![GitHub stars](https://img.shields.io/github/stars/johnstonskj/rdftools.svg)](https://github.com/johnstonskj/rdftools/stargazers)
-[![PyPI](https://img.shields.io/pypi/v/rdftools.svg)](https://pypi.python.org/pypi/rdftools)
-[![PyPI](https://img.shields.io/pypi/pyversions/rdftools.svg)](https://pypi.python.org/pypi/rdftools)
+[![Current Version](https://img.shields.io/pypi/v/rdftools.svg)](https://pypi.python.org/pypi/rdftools)
+[![Python Versions](https://img.shields.io/pypi/pyversions/rdftools.svg)](https://pypi.python.org/pypi/rdftools)
+[![Python Implementations](https://img.shields.io/pypi/implementation/rdftools.svg)](https://pypi.python.org/pypi/tdftools)
 
 ## Usage
 
@@ -65,7 +70,7 @@ Graph updated with 40 statements.
 >
 ```
 
-As you might expect, the shell supports a `help` function and command completion as well as a persistent history. 
+As you might expect, the shell supports a `help` function and command completion as well as a persistent history.
 
 ### Initialization File
 
