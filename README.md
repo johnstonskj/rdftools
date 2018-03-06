@@ -6,7 +6,9 @@ The functionality is provided by RDFLib, and while that provides a set of comman
 
 [![Travis Status](https://travis-ci.org/johnstonskj/rdftools.svg?branch=master)](https://travis-ci.org/johnstonskj/rdftools)
 [![Coverage Status](https://coveralls.io/repos/github/johnstonskj/rdftools/badge.svg?branch=master)](https://coveralls.io/github/johnstonskj/rdftools?branch=master)
-[![GitHub stars](https://img.shields.io/github/stars/RDFLib/rdflib.svg)](https://github.com/RDFLib/rdflib/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/johnstonskj/rdftools.svg)](https://github.com/johnstonskj/rdftools/stargazers)
+[![PyPI](https://img.shields.io/pypi/v/rdftools.svg)](https://pypi.python.org/pypi/rdftools)
+[![PyPI](https://img.shields.io/pypi/pyversions/rdftools.svg)](https://pypi.python.org/pypi/rdftools)
 
 ## Usage
 
