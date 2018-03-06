@@ -53,8 +53,8 @@ def command(name_or_func):
 
 
 def command_completer(text, index):
-    possibles = [command for command in COMMANDS.keys()
-                 if command.startswith(text)]
+    possibles = sorted([command for command in COMMANDS.keys()
+                        if command.startswith(text)])
     if index < len(possibles):
         return possibles[index]
     else:
@@ -274,11 +274,12 @@ def help(context, args):
         # TODO: validate args
         keys = [args]
     for cmd in keys:
-        text = COMMANDS[cmd].__doc__
-        if text is None:
-            info(' %s' % cmd)
-        else:
-            info(text)
+        if cmd in COMMANDS:
+            text = COMMANDS[cmd].__doc__
+            if text is None:
+                info(' %s' % cmd)
+            else:
+                info(text)
     return context
 
 
