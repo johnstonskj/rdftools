@@ -42,7 +42,8 @@ setup(
     packages=find_packages(exclude=['data', 'docs', 'tests']),
     python_requires='>=3.3',
     install_requires=['rdflib>=4.2'],
-    tests_require=['pytest>=3.0', 'pytest-cov>2.5', 'coverage>3.7', 'coveralls>1.1'],
+    tests_require=['pytest>=3.0', 'pytest-cov>2.5', 'coverage>3.7',
+                   'coveralls>1.1'],
     entry_points={  # Optional
         'console_scripts': [
             'rdf=rdftools.scripts.rdf:main',
