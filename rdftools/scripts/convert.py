@@ -1,5 +1,4 @@
 import argparse
-import i18n
 
 import rdftools
 
