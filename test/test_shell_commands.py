@@ -1,11 +1,15 @@
 import pytest
 
+import rdftools
 from rdftools.scripts import shell
 
 expected_commands = ['!', 'base', 'clear', 'close', 'connect', 'context',
                      'echo', 'exit', 'help', 'parse', 'predicates',
                      'prefix', 'prompt', 'query', 'serialize', 'show',
                      'subjects']
+
+
+rdftools.configure_translation(force_locale='en')
 
 
 @pytest.mark.parametrize('command', expected_commands)
@@ -81,4 +85,4 @@ def test_line_parser_unknown(capsys):
     shell.parse_input_line(None, 'unknown help!')
     (out, err) = capsys.readouterr()
     out = out[:-1]  # Remove trailing \n
-    assert out == 'Warning. Unknown command: unknown'
+    assert out == 'Warning, unknown command: unknown.'

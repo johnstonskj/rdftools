@@ -1,5 +1,7 @@
 import argparse
+import i18n
 import logging
+import os
 import rdflib
 import sys
 from timeit import default_timer as timer
@@ -13,14 +15,22 @@ FORMATS = ['nt', 'n3', 'turtle', 'rdfa', 'xml', 'pretty-xml']
 
 def startup(description, add_args, read_files=True):
     global __LOG__
+    configure_translation()
     parser = configure_argparse(description, read_files)
     if callable(add_args):
         parser = add_args(parser)
     command = parser.parse_args()
     process = parser.prog
     __LOG__ = configure_logging(process, command.verbose)
-    __LOG__.info('%s started.', process)
+    __LOG__.info(i18n.t('rdftools.started', tool=process))
     return (__LOG__, command)
+
+
+def configure_translation(force_locale=None):
+    i18n.load_path.append(os.path.join(os.path.dirname(__file__), 'messages'))
+    if force_locale is not None:
+        i18n.set('locale', force_locale)
+    i18n.set('fallback', 'en')
 
 
 def configure_argparse(description, read_files=True):
@@ -47,7 +57,7 @@ def configure_logging(name, level):
         logger.setLevel(logging.WARN)
     else:
         logger.setLevel(logging.ERROR)
-    logger.info('Log level set to %s', logger.getEffectiveLevel())
+    logger.info(i18n.t('rdftools.logging', level=logger.getEffectiveLevel()))
     __LOG__ = logger
     return logger
 
@@ -60,17 +70,18 @@ def read_into(input, format, graph, base=None):
         else:
             format = rdflib.util.guess_format(input.name)
     if input is None:
-        __LOG__.info('reading from STDIN, format is %s', format)
+        __LOG__.info(i18n.t('rdftools.read_stdin', format=format))
         start = timer()
         graph.parse(source=sys.stdin.buffer, format=format, publicID=base)
         end = timer()
     else:
-        __LOG__.info('reading from file %s, format is %s', input.name, format)
+        __LOG__.info(i18n.t('rdftools.read_file',
+                     name=input.name, format=format))
         start = timer()
         graph.parse(source=input.name, format=format, publicID=base)
         end = timer()
-    __LOG__.info("Graph has %s statements, read in %f seconds." %
-                 (len(graph), end - start))
+    __LOG__.info(i18n.t('rdftools.read_complete',
+                 len=len(graph), time=end - start))
     return graph
 
 
@@ -87,7 +98,7 @@ def read_all(inputs, format, base=None):
 
 
 def write(graph, output, format, base=None):
-    __LOG__.debug('writing graph=%s, %d statements.' % (graph, len(graph)))
+    __LOG__.debug(i18n.t('rdftools.write', graph=graph, len=len(graph)))
     start = end = 0
     if format is None:
         if output is None:
@@ -95,18 +106,18 @@ def write(graph, output, format, base=None):
         else:
             format = rdflib.util.guess_format(output.name)
     if output is None:
-        __LOG__.info('writing to STDOUT, format is %s' % format)
+        __LOG__.info(i18n.t('rdftools.write', format=format))
         start = timer()
         data = graph.serialize(format=format, base=base)
         end = timer()
         sys.stdout.buffer.write(data)
     else:
-        __LOG__.info('writing to file %s, format is %s' %
-                     (output.name, format))
+        __LOG__.info(i18n.t('rdftools.write_file',
+                     name=output.name, format=format))
         start = timer()
         graph.serialize(destination=output.name, format=format, base=base)
         end = timer()
-    __LOG__.debug('write took %f seconds.' % (end - start))
+    __LOG__.debug(i18n.t('rdftools.write_complete', time=(end - start)))
 
 
 def get_terminal_width(default=80):
@@ -115,28 +126,29 @@ def get_terminal_width(default=80):
 
 
 HEADER_SEP = '='
-
 COLUMN_SEP = '|'
+EMPTY_LINE = ''
+COLUMN_SPEC = '{:%d}'
 
 
 def report(columns, rows, timer=0):
     width = get_terminal_width()
     col_width = int((width - len(columns)) / len(columns))
-    col_string = '{:' + str(col_width) + '}'
+    col_string = COLUMN_SPEC % col_width
     for column in columns:
         print(col_string.format(column), end=COLUMN_SEP)
-    print("")
+    print(EMPTY_LINE)
 
     for column in columns:
         print(HEADER_SEP * col_width, end=COLUMN_SEP)
-    print("")
+    print(EMPTY_LINE)
 
     for row in rows:
         for col in columns:
             print(col_string.format(row[col]), end=COLUMN_SEP)
-        print("")
+        print(EMPTY_LINE)
 
     if timer != 0:
-        print('%d rows returned in %f seconds.' % (len(rows), timer))
+        print(i18n.t('rdftools.report_timed', len=len(rows), time=timer))
     else:
-        print('%d rows returned.' % len(rows))
+        print(i18n.t('rdftools.report_timed', len=len(rows)))

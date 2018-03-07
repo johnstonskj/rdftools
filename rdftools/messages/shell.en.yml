@@ -1,0 +1,23 @@
+en:
+  command: "RDF/SPARQL shell."
+  welcome: "RDF Tools interactive shell. rdftools version %{version}."
+  read_file: "Reading commands from file %{name}."
+  query_form_err: "No valid query specified (expecting one of %{forms})."
+  query_no_results: "Select returned no results."
+  ask_results: "Ask returned %{result}."
+  graph_updated: "Graph updated with %{len} statements."
+  file_written: "Graph written successfully to file %{name}."
+
+  to_do: "Unfortunately, this command is not implemented."
+
+  unknown_cmd: "Warning, unknown command: %{command}."
+  no_file: "Warning, file named %{name} does not exist."
+  invalid_params: "Warning, invalid parameters for command."
+  invalid_param_num: "Warning, excpecting {count} parameters for command."
+  invalid_format: "Warning, format %{format} not known or supported."
+  invalid_prefix: "Warning, a prefix must end with ':'."
+  invalid_uri: "Warning, a URI must be enclosed in <>."
+
+  readline_err: "Error, readline configuration exception."
+  file_write_err: "Error, unexpected problem writing file. Exception: %{err}"
+  file_read_err: "Error, unexpected problem reading file. Exception: %{err}"

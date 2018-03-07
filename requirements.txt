@@ -1,5 +1,6 @@
 rdflib>=4.2
-python-i18n>=0.3[YAML]
+python-i18n>=0.3
+pyyaml>=3.10
 flake8>=3.5
 pytest>=3.0
 pytest-cov>=2.5
