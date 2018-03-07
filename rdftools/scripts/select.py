@@ -1,3 +1,4 @@
+import i18n
 import rdftools
 
 
@@ -15,24 +16,24 @@ def add_args(parser):
 
 
 def main():
-    (LOG, cmd) = rdftools.startup('RDF simple select.', add_args)
+    (LOG, cmd) = rdftools.startup('scripts.select_command', add_args)
 
     graph = rdftools.read_all(cmd.input, cmd.read)
 
     if cmd.select == 's':
-        LOG.info('Listing all subjects:')
+        LOG.info(i18n.t('scripts.select_subjects'))
         for s in set(graph.subjects()):
             print(s)
     elif cmd.select == 'p':
-        LOG.info('Listing all predicates:')
+        LOG.info(i18n.t('scripts.select_predicates'))
         for s in set(graph.predicates()):
             print(s)
     elif cmd.select == 'o':
-        LOG.info('Listing all objects:')
+        LOG.info(i18n.t('scripts.select_objects'))
         for s in set(graph.objects()):
             print(s)
     elif cmd.select == 't':
-        LOG.info('Listing all asserted types:')
+        LOG.info(i18n.t('scripts.select_types'))
         for s in set(graph.objects(
                 predicate='http://www.w3.org/1999/02/22-rdf-syntax-ns#type')):
             print(s)

@@ -1,4 +1,5 @@
 import argparse
+import i18n
 
 import rdftools
 
@@ -11,6 +12,6 @@ def add_args(parser):
 
 
 def main():
-    (LOG, cmd) = rdftools.startup('RDF file converter.', add_args)
+    (LOG, cmd) = rdftools.startup('scripts.convert_command', add_args)
     graph = rdftools.read_all(cmd.input, cmd.read)
     rdftools.write(graph, cmd.output, cmd.write)

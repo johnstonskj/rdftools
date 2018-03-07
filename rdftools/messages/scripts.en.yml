@@ -1,0 +1,22 @@
+en:
+  rdf_command: "RDF tool(s)."
+  rdf_call: "running command %{name} with command-line arguments %{params}."
+
+  convert_command: "RDF file converter.'"
+
+  query_command: "SPARQL query."
+  query_started: "executing query..."
+  query_rows: "row count: %{len}"
+  query_columns: "column names: %{names}"
+  query_no_results: "query returned no results."
+
+  select_command: "RDF simple select."
+  select_subjects: "listing all subjects in the graph."
+  select_predicates: "listing all predicates in the graph."
+  select_objects: "listing all objects in the graph."
+  select_types: "listing all asserted types in the graph."
+
+  validate_command: "RDF file validation."
+  validate_started: "validating file %{name}"
+  validate_succeeded: "File validated successfully"
+  validate_failed: "File validation failed"

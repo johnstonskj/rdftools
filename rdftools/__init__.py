@@ -13,16 +13,17 @@ __LOG__ = None
 FORMATS = ['nt', 'n3', 'turtle', 'rdfa', 'xml', 'pretty-xml']
 
 
-def startup(description, add_args, read_files=True):
+def startup(description_key, add_args, read_files=True):
     global __LOG__
     configure_translation()
+    description = i18n.t(description_key)
     parser = configure_argparse(description, read_files)
     if callable(add_args):
         parser = add_args(parser)
     command = parser.parse_args()
     process = parser.prog
     __LOG__ = configure_logging(process, command.verbose)
-    __LOG__.info(i18n.t('rdftools.started', tool=process))
+    __LOG__.info(i18n.t('rdftools.started', tool=process, name=description))
     return (__LOG__, command)
 
 
@@ -106,7 +107,7 @@ def write(graph, output, format, base=None):
         else:
             format = rdflib.util.guess_format(output.name)
     if output is None:
-        __LOG__.info(i18n.t('rdftools.write', format=format))
+        __LOG__.info(i18n.t('rdftools.write_stdout', format=format))
         start = timer()
         data = graph.serialize(format=format, base=base)
         end = timer()

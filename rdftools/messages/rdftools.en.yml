@@ -1,9 +1,9 @@
 en:
-  started: "%{tool} started."
+  started: "%{tool} (%{name}) started."
   logging: "Log level set to %{level}"
   read_stdin: "reading from STDIN, format is %{format}"
   read_file: "reading from file %{name}, format is %{format}"
-  read_complete: "Graph has %{len} statements, read in %{time} seconds."
+  read_complete: "graph has %{len} statements, read in %{time} seconds."
   write: "writing graph=%{graph}, %{len} statements."
   write_stdout: "writing to STDOUT, format is %{format}"
   write_file: "writing to file %{name}, format is %{format}"

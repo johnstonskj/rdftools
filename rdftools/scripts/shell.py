@@ -378,7 +378,7 @@ def run_loop(context):
 
 def main():
     global LOG
-    (LOG, cmd) = rdftools.startup(i18n.t('shell.command'),
+    (LOG, cmd) = rdftools.startup('shell.command',
                                   add_args=None, read_files=False)
     info(i18n.t('shell.welcome', version=rdftools.__VERSION__))
     configure_readline()
