@@ -2,7 +2,7 @@
 
 ## Release 0.2.0, on 2018-03-07.
 
-Primarily this is a cleanup, focused on testing,
+Primarily this is a cleanup, focused on testing, and internationalization.
 
 #### Bug Fixes
 
