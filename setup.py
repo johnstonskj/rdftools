@@ -1,31 +1,54 @@
-"""A setuptools based setup module.
-See:
-https://packaging.python.org/en/latest/distributing.html
-https://github.com/pypa/sampleproject
-"""
-
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
-# To use a consistent encoding
-from codecs import open
-from os import path
-# Get version from module
-import rdftools
+from os import environ, path
+import re
 
-here = path.abspath(path.dirname(__file__))
 
-# Get the long description from the README file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
+def find_version(filename):
+    """ Find the embedded version string in the package source. """
+    _version_re = re.compile(r"__VERSION__ = '(.*)'")
+    for line in open(filename):
+        version_match = _version_re.match(line)
+        if version_match:
+            return version_match.group(1)
+
+
+def get_packages():
+    """ Return a list of packages that represent the distributed source. """
+    packages = find_packages(exclude=['data', 'docs', 'test', 'examples'])
+    if environ.get('READTHEDOCS', None):
+        # if building docs for RTD, include examples to get docstrings
+        packages.append('examples')
+    return packages
+
+
+def get_long_description(filename):
+    """ Read the long description from a file, usually a README.*. """
+    with open(filename) as f:
+        return f.read()
+
+
+def get_requirements(filename):
+    requirements = []
+    with open(filename) as f:
+        requirements.append(f.read().splitlines())
+    return requirements
+
+
+NAME = 'rdftools'
+HERE = path.abspath(path.dirname(__file__))
+VERSION = find_version(path.join(HERE, ('%s/__init__.py' % NAME)))
+PACKAGES = get_packages()
+LONG_DESCRIPTION = get_long_description(path.join(HERE, 'README.md'))
 
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
 setup(
-    name=rdftools.__name__,
-    version=rdftools.__VERSION__,
+    name=NAME,
+    version=VERSION,
     description='Command-line tools for RDF',
-    long_description=long_description,
-    url='https://github.com/johnstonskj/rdftools',
+    long_description=LONG_DESCRIPTION,
+    url='https://github.com/johnstonskj/%s' % NAME,
     author='Simon Johnston',
     author_email='johnstonskj@gmail.com',
     classifiers=[  # Optional
@@ -45,9 +68,9 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
     keywords='development, RDF',
-    packages=find_packages(exclude=['data', 'docs', 'tests']),
+    packages=PACKAGES,
     python_requires='>=3.3',
-    install_requires=['rdflib>=4.2'],
+    install_requires=['rdflib>=4.2', 'python-i18n>=0.3[YAML]'],
     tests_require=['pytest>=3.0', 'pytest-cov>2.5', 'coverage>3.7',
                    'coveralls>1.1'],
     entry_points={  # Optional

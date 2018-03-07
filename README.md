@@ -6,6 +6,7 @@ The functionality is provided by RDFLib, and while that provides a set of comman
 
 [![Travis Status](https://travis-ci.org/johnstonskj/rdftools.svg?branch=master)](https://travis-ci.org/johnstonskj/rdftools)
 [![Coverage Status](https://coveralls.io/repos/github/johnstonskj/rdftools/badge.svg?branch=master)](https://coveralls.io/github/johnstonskj/rdftools?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/713dc63ecf8f8efa44d7/maintainability)](https://codeclimate.com/github/johnstonskj/rdftools/maintainability)
 [![Requirements](https://requires.io/github/johnstonskj/rdftools/requirements.svg?branch=master)](https://requires.io/github/johnstonskj/rdftools/requirements/?branch=master)
 <!--
 [![Doc Status](https://readthedocs.org/projects/rdftools/badge/?style=flat)](https://readthedocs.org/projects/rdftools)
