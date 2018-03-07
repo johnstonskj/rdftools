@@ -6,7 +6,7 @@ import rdflib
 import sys
 from timeit import default_timer as timer
 
-__VERSION__ = '0.1.0'
+__VERSION__ = '0.2.0'
 
 __LOG__ = None
 
