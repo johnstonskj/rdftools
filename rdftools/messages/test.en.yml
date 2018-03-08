@@ -1,0 +1,3 @@
+en:
+  command: "RDF Tools tests."
+  test_case: "test %{name}?"

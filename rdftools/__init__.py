@@ -13,17 +13,18 @@ __LOG__ = None
 FORMATS = ['nt', 'n3', 'turtle', 'rdfa', 'xml', 'pretty-xml']
 
 
-def startup(description_key, add_args, read_files=True):
+def startup(description_key, add_args, read_files=True, argv=sys.argv[1:]):
     global __LOG__
     configure_translation()
     description = i18n.t(description_key)
     parser = configure_argparse(description, read_files)
     if callable(add_args):
         parser = add_args(parser)
-    command = parser.parse_args()
+    command = parser.parse_args(argv)
     process = parser.prog
     __LOG__ = configure_logging(process, command.verbose)
     __LOG__.info(i18n.t('rdftools.started', tool=process, name=description))
+    __LOG__.info(argv)
     return (__LOG__, command)
 
 
@@ -51,9 +52,9 @@ def configure_logging(name, level):
                         '%(lineno)d [%(levelname)s] - %(message)s')
     logger = logging.getLogger(name)
     if level > 2:
-        logger.setLevel(logging.DEBUG)
-    elif level > 1:
         logger.setLevel(logging.INFO)
+    elif level > 1:
+        logger.setLevel(logging.DEBUG)
     elif level > 0:
         logger.setLevel(logging.WARN)
     else:
