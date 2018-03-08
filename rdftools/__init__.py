@@ -115,7 +115,11 @@ def write(graph, output, format, base=None):
         start = timer()
         data = graph.serialize(format=format, base=base)
         end = timer()
-        sys.stdout.buffer.write(data)
+        try:
+            # This fails on Travis ONLY for Python 3.4
+            sys.stdout.buffer.write(data)
+        except AttributeError:
+            sys.stdout.write(data)
     else:
         __LOG__.info(i18n.t('rdftools.write_file',
                      name=output.name, format=format))
