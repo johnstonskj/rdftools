@@ -26,4 +26,4 @@ def main():
                   names=', '.join([str(c) for c in columns])))
         rdftools.report(columns, results,  end - start)
     else:
-        LOG.info(i18n.t('scripts.query_no_results'))
+        print(i18n.t('scripts.query_no_results'))
