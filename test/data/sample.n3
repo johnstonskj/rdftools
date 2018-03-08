@@ -1,0 +1,37 @@
+@prefix c:  <http://example.org/social/people/1.0/>.
+@prefix cp: <http://example.org/social/profile/1.0/>.
+@prefix cr: <http://example.org/social/relationship/1.0/>.
+@prefix ct: <http://example.org/social/topics/1.0/>.
+
+c:Bob
+	a cp:Person;
+	cr:parent c:Carol;
+	cr:spouse c:Alice;
+	cr:child c:Eve,
+		 c:Frank;
+	cr:member c:OurFamily;
+	cr:likes ct:Diving;
+	.
+
+c:Alice a cp:Person;
+	cr:parent c:Dave;
+	cr:child c:Grace,
+		 c:Heidi;
+	cr:member c:OurFamily;
+	cr:likes ct:Diving,
+		 ct:Shoes;
+	.
+
+c:Carol a cp:Person.
+c:Dave a cp:Person.
+c:Eve a cp:Person.
+c:Frank a cp:Person.
+c:Grace a cp:Person;
+	cr:member c:OurFamily.
+c:Heidi a cp:Person;
+	cr:member c:OurFamily.
+
+c:OurFamily a cp:Family.
+
+ct:Diving a ct:Topic.
+ct:Shoes a ct:Topic.

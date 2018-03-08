@@ -1,4 +1,5 @@
 en:
+  read_error: "Error parsing a file. Exception message: %{message}"
   rdf_command: "RDF tool(s)."
   rdf_call: "running command %{name} with command-line arguments %{params}."
 

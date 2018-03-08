@@ -13,14 +13,17 @@ __LOG__ = None
 FORMATS = ['nt', 'n3', 'turtle', 'rdfa', 'xml', 'pretty-xml']
 
 
-def startup(description_key, add_args, read_files=True, argv=sys.argv[1:]):
+def startup(description_key, add_args, read_files=True, argv=None):
     global __LOG__
     configure_translation()
     description = i18n.t(description_key)
     parser = configure_argparse(description, read_files)
     if callable(add_args):
         parser = add_args(parser)
-    command = parser.parse_args(argv)
+    if argv is None:
+        command = parser.parse_args()
+    else:
+        command = parser.parse_args(argv)
     process = parser.prog
     __LOG__ = configure_logging(process, command.verbose)
     __LOG__.info(i18n.t('rdftools.started', tool=process, name=description))
