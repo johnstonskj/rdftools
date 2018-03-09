@@ -1,4 +1,5 @@
 import i18n
+from rdflib.namespace import RDF
 import rdftools
 
 
@@ -34,6 +35,5 @@ def main():
             print(s)
     elif cmd.select == 't':
         LOG.info(i18n.t('scripts.select_types'))
-        for s in set(graph.objects(
-                predicate='http://www.w3.org/1999/02/22-rdf-syntax-ns#type')):
+        for s in set(graph.objects(predicate=RDF.type)):
             print(s)
