@@ -51,6 +51,7 @@ setup(
     url='https://github.com/johnstonskj/%s' % NAME,
     author='Simon Johnston',
     author_email='johnstonskj@gmail.com',
+    license='MIT',
     classifiers=[  # Optional
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
@@ -73,6 +74,9 @@ setup(
     install_requires=['rdflib>=4.2', 'python-i18n>=0.3', 'pyyaml>=3.10'],
     tests_require=['pytest>=3.0', 'pytest-cov>2.5', 'coverage>3.7',
                    'coveralls>1.1'],
+    package_data={
+        '': ['*.yml']
+    },
     entry_points={  # Optional
         'console_scripts': [
             'rdf=rdftools.scripts.rdf:main',

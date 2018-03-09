@@ -2,3 +2,6 @@ include CHANGELOG.md
 include README.md
 include LICENSE
 include requirements.txt
+
+graft rdftools/messages
+graft test/data
