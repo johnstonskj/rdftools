@@ -4,7 +4,8 @@ from unittest.mock import patch
 from rdftools.scripts import rdf
 
 
-expected_out = """usage: rdf-query [-h] [-v] [-b BASE] [-i [INPUT [INPUT ...]]] [-r {nt,n3,turtle,rdfa,xml,pretty-xml}] [-q QUERY]
+expected_out = """usage: rdf-query [-h] [-v] [-b BASE] [-i [INPUT [INPUT ...]]]
+                 [-r {nt,n3,turtle,rdfa,xml,pretty-xml}] [-q QUERY]
 
 SPARQL query.
 
