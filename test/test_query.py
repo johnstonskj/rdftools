@@ -15,7 +15,7 @@ expected_out = sorted([
 
 def test_query_script(capsys):
     with patch('sys.argv',
-               ['test_convert', '-i', sample_file, '-r', 'n3', '-q',
+               ['test_query', '-i', sample_file, '-r', 'n3', '-q',
                 'SELECT DISTINCT ?type WHERE { ?s a ?type }']):
         query.main()
         (out, err) = capsys.readouterr()
