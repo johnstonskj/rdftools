@@ -1,10 +1,9 @@
 import pytest
-import os
 from unittest.mock import patch
 
 from rdftools.scripts import convert
+from test.sample_data import input_file
 
-sample_file = os.path.join(os.path.dirname(__file__), 'data/sample.n3')
 sample_triples = sorted([
     '<http://example.org/social/people/1.0/Bob> <http://example.org/social/relationship/1.0/parent> <http://example.org/social/people/1.0/Carol> .',  # noqa: 501
     '<http://example.org/social/people/1.0/Dave> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/social/profile/1.0/Person> .',  # noqa: 501
@@ -36,7 +35,7 @@ sample_triples = sorted([
 
 def test_convert_script(capsys):
     with patch('sys.argv',
-               ['test_convert', '-i', sample_file, '-r', 'n3', '-w', 'nt']):
+               ['test_convert', '-i', input_file, '-r', 'n3', '-w', 'nt']):
         convert.main()
         (out, err) = capsys.readouterr()
         out_lines = sorted([line for line in out.split('\n')
@@ -63,7 +62,7 @@ def test_convert_script_no_file(capsys):
 def test_convert_script_bad_read(capsys):
     expected_err = "error: argument -r/--read: invalid choice: 'python'"
     with patch('sys.argv',
-               ['test_convert', '-i', sample_file, '-r', 'python',
+               ['test_convert', '-i', input_file, '-r', 'python',
                 '-w', 'nt']):
         try:
             convert.main()
@@ -86,7 +85,7 @@ def test_convert_script_bad_format(capsys):
 def test_convert_script_bad_write(capsys):
     expected_err = "error: argument -w/--write: invalid choice: 'python'"
     with patch('sys.argv',
-               ['test_convert', '-i', sample_file, '-r', 'n3',
+               ['test_convert', '-i', input_file, '-r', 'n3',
                 '-w', 'python']):
         try:
             convert.main()

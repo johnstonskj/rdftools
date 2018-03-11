@@ -1,10 +1,8 @@
 import pytest
-import os
 from unittest.mock import patch
 
 from rdftools.scripts import select
-
-sample_file = os.path.join(os.path.dirname(__file__), 'data/sample.n3')
+from test.sample_data import input_file
 
 expected_subjects = sorted("""http://example.org/social/people/1.0/OurFamily
 http://example.org/social/people/1.0/Alice
@@ -58,7 +56,7 @@ test_parameters = [
 @pytest.mark.parametrize('param, expected', test_parameters)
 def test_select_script_subjects(capsys, param, expected):
     with patch('sys.argv',
-               ['test_select', '-i', sample_file, '-r', 'n3', param]):
+               ['test_select', '-i', input_file, '-r', 'n3', param]):
         select.main()
         (out, err) = capsys.readouterr()
         out_lines = sorted([line for line in out.split('\n')

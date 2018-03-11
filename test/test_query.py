@@ -1,10 +1,8 @@
-import os
 import pytest
 from unittest.mock import patch
 
 from rdftools.scripts import query
-
-sample_file = os.path.join(os.path.dirname(__file__), 'data/sample.n3')
+from test.sample_data import input_file
 
 expected_out = sorted([
     'http://example.org/social/profile/1.0/Person',
@@ -15,7 +13,7 @@ expected_out = sorted([
 
 def test_query_script(capsys):
     with patch('sys.argv',
-               ['test_query', '-i', sample_file, '-r', 'n3', '-q',
+               ['test_query', '-i', input_file, '-r', 'n3', '-q',
                 'SELECT DISTINCT ?type WHERE { ?s a ?type }']):
         query.main()
         (out, err) = capsys.readouterr()
@@ -29,7 +27,7 @@ def test_query_script(capsys):
 def test_query_script_empty(capsys):
     expected = "query returned no results."
     with patch('sys.argv',
-               ['test_convert', '-i', sample_file, '-r', 'n3', '-q',
+               ['test_convert', '-i', input_file, '-r', 'n3', '-q',
                 'SELECT DISTINCT ?type WHERE { ?s a <http://example.org/people/me> }']):  # noqa: 501
         query.main()
         (out, err) = capsys.readouterr()
@@ -40,7 +38,7 @@ def test_query_script_bad_sparql(capsys):
     import pyparsing
     expected_err = "Expected {SelectQuery | ConstructQuery | DescribeQuery | AskQuery}"  # noqa: 501
     with patch('sys.argv',
-               ['test_convert', '-i', sample_file, '-r', 'n3', '-q',
+               ['test_convert', '-i', input_file, '-r', 'n3', '-q',
                 'WHAT IS SPARQL?']):
         try:
             query.main()
