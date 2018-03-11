@@ -10,8 +10,7 @@ c:Bob
 	cr:child c:Eve,
 		 c:Frank;
 	cr:member c:OurFamily;
-	cr:likes ct:Diving;
-	.
+	cr:likes ct:Diving.
 
 c:Alice a cp:Person;
 	cr:parent c:Dave;
@@ -19,8 +18,7 @@ c:Alice a cp:Person;
 		 c:Heidi;
 	cr:member c:OurFamily;
 	cr:likes ct:Diving,
-		 ct:Shoes;
-	.
+		 ct:Shoes.
 
 c:Carol a cp:Person.
 c:Dave a cp:Person.
