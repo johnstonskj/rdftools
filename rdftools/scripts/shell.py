@@ -254,10 +254,8 @@ def close(context, ignored):
 def context(context, ignored):
     """ context
         Display the current context."""
-    if context.base is not None:
-        info('BASE %s' % context.base)
-    for (pre, uri) in context.graph.namespaces():
-        info('PREFIX %s: <%s>.' % (pre, uri))
+    context = base(context, BLANK_LINE)
+    context = prefix(context, BLANK_LINE)
     info(BLANK_LINE)
     # TODO: i18n the block below.
     info('Graph        ID %s' % context.graph._Graph__identifier)

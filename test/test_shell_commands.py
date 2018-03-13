@@ -142,6 +142,18 @@ def test_prefix_bad_uri(capsys, uri):
     assert out.index('Warning') == 0
 
 
+def test_context(capsys):
+    context = new_context()
+    context = shell.base(context, '<http://example.org/stuff#>')
+    context = shell.prefix(context, 'c: <http://example.org/concepts#>')
+    context = shell.parse(context, input_file)
+    context = shell.context(context, '')
+    (out, err) = capsys.readouterr()
+    assert out.index('BASE <http://example.org/stuff#>') >= 0
+    assert out.index('PREFIX c: <http://example.org/concepts#>') >= 0
+    assert out.index('size 25 statements') >= 0
+
+
 def test_parse(capsys):
     context = new_context()
     context = shell.parse(context, input_file)
