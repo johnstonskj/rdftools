@@ -123,7 +123,7 @@ def test_prefix(capsys):
     assert out.index(prefix_str) >= 0
 
 
-bad_prefixes = [('s'), ('s s'), ('_')]
+bad_prefixes = [('s'), ('s*s:'), ('_:')]
 
 
 @pytest.mark.parametrize('prefix', bad_prefixes)
