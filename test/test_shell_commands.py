@@ -167,6 +167,13 @@ def test_parse_bad_format(capsys):
     assert out.index('Warning') == 0
 
 
+def test_parse_no_file(capsys):
+    context = new_context()
+    context = shell.parse(context, input_file + '_noexist')
+    (out, err) = capsys.readouterr()
+    assert out.index('Error, unexpected problem reading file.') == 0
+
+
 def test_serialize(tmpdir):
     p = tmpdir.mkdir("tests").join("sample_out.xml")
     context = new_context()
@@ -174,6 +181,14 @@ def test_serialize(tmpdir):
     written = p.read()
     assert written.startswith('<?xml version="1.0" encoding="UTF-8"?>\n<rdf:RDF\n')  # noqa: 501
     assert written.endswith('</rdf:RDF>\n')
+
+
+def test_serialize_bad_file(capsys, tmpdir):
+    p = tmpdir.mkdir("tests").join("/dir/doesnt/exist/sample_out.xml")
+    context = new_context()
+    context = shell.serialize(context, str(p) + ' xml')
+    (out, err) = capsys.readouterr()
+    assert out.index('Error, unexpected problem writing file.') == 0
 
 
 def test_show(capsys):
