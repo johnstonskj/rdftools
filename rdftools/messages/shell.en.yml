@@ -13,8 +13,9 @@ en:
   unknown_cmd: "Warning, unknown command: %{command}."
   no_file: "Warning, file named %{name} does not exist."
   invalid_params: "Warning, invalid parameters for command."
-  invalid_param_num: "Warning, excpecting {count} parameters for command."
+  invalid_param_num: "Warning, expecting {count} parameters for command."
   invalid_format: "Warning, format %{format} not known or supported."
+  invalid_prefix_char: "Warning, a prefix must only contain alphanumerics."
   invalid_prefix: "Warning, a prefix must end with ':'."
   invalid_uri: "Warning, a URI must be enclosed in <>."
 

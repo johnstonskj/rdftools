@@ -11,9 +11,23 @@ from timeit import default_timer as timer
 
 import rdftools
 
-LOG = None
+SPACE = ' '
+BLANK_LINE = ''
+QUERY_FORMS = ['SELECT', 'ASK', 'DESCRIBE', 'CONSTRUCT', 'UPDATE']
 
+LOG = None
 COMMANDS = {}
+
+
+SimpleFile = namedtuple('SimpleFile', ['name'])
+
+
+class ShellContext(object):
+
+    def __init__(self):
+        self.prompt = '>>> '
+        self.base = None
+        self.graph = rdflib.Graph()
 
 
 def info(text):
@@ -69,20 +83,26 @@ def command_completer(text, index):
         return None
 
 
+def parse_uri(uri):
+    if uri.startswith('<') and uri.endswith('>'):
+        return uri[1:-1]
+    else:
+        warning(i18n.t('shell.invalid_uri'))
+        return None
+
+
 @command
 def base(context, args):
     """ base [URI]
         Set the base URI to be used when parsing model files."""
     args2 = args.strip().split()
     if len(args2) == 0:
-        if not context['base'] is None:
-            info('BASE %s' % context['base'])
+        if context.base is not None:
+            info('BASE <%s>' % context.base)
     elif len(args2) >= 1:
-        uri = args2[0].strip()
-        if uri.startswith('<') and uri.endswith('>'):
-            context['base'] = uri
-        else:
-            warning(i18n.t('shell.invalid_uri'))
+        base = parse_uri(args2[0].strip())
+        if base is not None:
+            context.base = base
     return context
 
 
@@ -92,23 +112,22 @@ def prefix(context, args):
         Set a prefix to represent a URI."""
     args2 = args.strip().split()
     if len(args2) == 0:
-        for (pre, uri) in context['graph'].namespaces():
-            info('PREFIX %s: %s' % (pre, uri))
+        for (pre, uri) in context.graph.namespaces():
+            info('PREFIX %s: <%s>.' % (pre, uri))
     elif len(args2) == 2:
         pre = args2[0].strip()
         if pre.endswith(':'):
-            # TODO check for '?'
             pre = pre[:-1]
-            uri = args2[1].strip()
-            context['graph'].bind(pre, uri)
+            if pre == '' or pre.isalnum():
+                uri = parse_uri(args2[1].strip())
+                context.graph.bind(pre, uri)
+            else:
+                warning(i18n.t('shell.invalid_prefix_char'))
         else:
             warning(i18n.t('shell.invalid_prefix'))
     else:
         warning(i18n.t('shell.invalid_param_num', count=2))
     return context
-
-
-SimpleFile = namedtuple('SimpleFile', ['name'])
 
 
 def get_format(args, place=2):
@@ -118,7 +137,7 @@ def get_format(args, place=2):
         if _format in rdftools.FORMATS:
             format = _format
         else:
-            warning(i18n.t('shell.invalid_format', format=format))
+            warning(i18n.t('shell.invalid_format', format=_format))
     return format
 
 
@@ -130,10 +149,10 @@ def parse(context, args):
     format = get_format(args2)
     if len(args2) >= 1:
         try:
-            context['graph'] = rdftools.read_into(
+            context.graph = rdftools.read_into(
                 SimpleFile(args2[0]), format,
-                context['graph'], context['base'])
-            info(i18n.t('shell.graph_updated', len=len(context['graph'])))
+                context.graph, context.base)
+            info(i18n.t('shell.graph_updated', len=len(context.graph)))
         except IOError as ex:
             exception(i18n.t('shell.file_read_err', err=ex))
     else:
@@ -149,7 +168,7 @@ def serialize(context, args):
     format = get_format(args2)
     if len(args2) >= 1:
         try:
-            rdftools.write(context['graph'], SimpleFile(args2[0]), format)
+            rdftools.write(context.graph, SimpleFile(args2[0]), format)
             info(i18n.t('shell.invalid_params', name=args2[0]))
         except IOError as ex:
             exception(i18n.t('shell.file_write_err', err=ex))
@@ -164,11 +183,8 @@ def show(context, args):
         Display current context graph in format."""
     args2 = args.strip().split()
     format = get_format(args2, place=1)
-    rdftools.write(context['graph'], None, format)
+    rdftools.write(context.graph, None, format)
     return context
-
-
-QUERY_FORMS = ['SELECT', 'ASK', 'DESCRIBE', 'CONSTRUCT', 'UPDATE']
 
 
 @command
@@ -178,7 +194,7 @@ def query(context, args):
     sparql = args.strip()
     if len(sparql) > 6:
         start = timer()
-        results = context['graph'].query(sparql)
+        results = context.graph.query(sparql)
         end = timer()
         if sparql[:6].upper() == 'SELECT':
             if len(results) > 0:
@@ -201,7 +217,7 @@ def query(context, args):
 def subjects(context, ignored):
     """ subjects
         Display subjects in current context."""
-    for s in set(context['graph'].subjects()):
+    for s in set(context.graph.subjects()):
         info(s)
     return context
 
@@ -210,7 +226,7 @@ def subjects(context, ignored):
 def predicates(context, ignored):
     """ predicates
         Display predicates in current context."""
-    for p in set(context['graph'].predicates()):
+    for p in set(context.graph.predicates()):
         info(p)
     return context
 
@@ -239,18 +255,19 @@ def close(context, ignored):
 def context(context, ignored):
     """ context
         Display the current context."""
-    if not context['base'] is None:
-        info('BASE %s' % context['base'])
-    for (pre, uri) in context['graph'].namespaces():
-        info('PREFIX %s: %s' % (pre, uri))
+    if context.base is not None:
+        info('BASE %s' % context.base)
+    for (pre, uri) in context.graph.namespaces():
+        info('PREFIX %s: <%s>.' % (pre, uri))
     info(BLANK_LINE)
     # TODO: i18n the block below.
-    info('Graph        ID %s' % context['graph']._Graph__identifier)
-    info('|         store %s' % context['graph']._Graph__store)
-    info('|          size %d statements' % len(context['graph']))
-    info('|context aware? %s' % context['graph'].context_aware)
-    info('|formula aware? %s' % context['graph'].formula_aware)
-    info('|default union? %s' % context['graph'].default_union)
+    info('Graph        ID %s' % context.graph._Graph__identifier)
+    info('|          type %s' % type(context.graph).__name__)
+    info('|         store %s' % context.graph._Graph__store)
+    info('|          size %d statements' % len(context.graph))
+    info('|context aware? %s' % context.graph.context_aware)
+    info('|formula aware? %s' % context.graph.formula_aware)
+    info('|default union? %s' % context.graph.default_union)
     info(BLANK_LINE)
     return context
 
@@ -259,8 +276,7 @@ def context(context, ignored):
 def clear(context, args):
     """ clear [base | prefix pre:]
         Clear the current context."""
-    # TODO: clear base/prefix
-    return {'base': None, 'graph': rdflib.Graph()}
+    return ShellContext()
 
 
 @command('!')
@@ -308,8 +324,8 @@ def echo(context, args):
 def prompt(context, args):
     """ prompt text
         Set the prompt used in the shell."""
-    global PROMPT
-    PROMPT = args + ' '
+    if not args == '':
+        context.prompt = args + SPACE
     return context
 
 
@@ -338,10 +354,6 @@ def parse_cmdfile(context, filename):
         warning(i18n.t('shell.no_file', name=filename))
 
 
-SPACE = ' '
-BLANK_LINE = ''
-
-
 def parse_input_line(context, line):
     line = line.strip()
     if line != BLANK_LINE:
@@ -359,13 +371,10 @@ def parse_input_line(context, line):
     return context
 
 
-PROMPT = '> '
-
-
 def run_loop(context):
     while True:
         try:
-            input_line = input(PROMPT)
+            input_line = input(context.prompt)
             if input_line.strip() == 'exit':
                 if is_open(context):
                     close(context, None)
@@ -383,6 +392,6 @@ def main():
     info(i18n.t('shell.welcome', version=rdftools.__VERSION__))
     configure_readline()
     context = clear(None, None)
-    context['base'] = cmd.base
+    context.base = cmd.base
     parse_cmdfile(context, os.path.join(os.path.expanduser("~"), ".rdfshrc"))
     run_loop(context)

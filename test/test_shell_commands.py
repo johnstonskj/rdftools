@@ -2,7 +2,7 @@ import pytest
 
 import rdftools
 from rdftools.scripts import shell
-from test.sample_data import input_file
+from test.sample_data import input_file, input_file_count
 
 expected_commands = ['!', 'base', 'clear', 'close', 'connect', 'context',
                      'echo', 'exit', 'help', 'parse', 'predicates',
@@ -28,7 +28,7 @@ def test_add_command():
             Return the contents of a named graph."""
         return context
 
-    assert 'graph in shell.COMMANDS'
+    assert 'graph' in shell.COMMANDS
 
 
 def test_renamed_command():
@@ -68,50 +68,54 @@ def test_command_completion(index, text):
 
 def test_prompt():
     prompt_str = '$test$'
-    shell.prompt(None, prompt_str)
-    assert shell.PROMPT == '%s ' % prompt_str
+    context = new_context()
+    shell.prompt(context, prompt_str)
+    assert context.prompt == '%s ' % prompt_str
 
 
 def test_echo(capsys):
     echo_str = 'help!'
     shell.echo(None, echo_str)
     (out, err) = capsys.readouterr()
-    out = out[:-1]  # Remove trailing \n
-    assert out == echo_str
+    assert out.strip() == echo_str
 
 
 def test_line_parser(capsys):
     echo_str = 'help!'
     shell.parse_input_line(None, 'echo %s' % echo_str)
     (out, err) = capsys.readouterr()
-    out = out[:-1]  # Remove trailing \n
-    assert out == echo_str
+    assert out.strip() == echo_str
 
 
 def test_line_parser_unknown(capsys):
     shell.parse_input_line(None, 'unknown command, help!')
     (out, err) = capsys.readouterr()
-    out = out[:-1]  # Remove trailing \n
-    assert out == 'Warning, unknown command: unknown.'
+    assert out.strip() == 'Warning, unknown command: unknown.'
 
 
 def test_base(capsys):
     base_uri = '<http://example.org/stuff#>'
     context = new_context()
-    assert context['base'] is None
+    assert context.base is None
     context = shell.base(context, base_uri)
     context = shell.base(context, '')
     (out, err) = capsys.readouterr()
     assert out.index('BASE %s' % base_uri) >= 0
 
 
-@pytest.mark.skip(reason='TODO')
-def test_base_bad_uri():
-    pass
+bad_uris = [('http://ex.org'), ('<http://ex.org'), ('http://ex.org>')]
+
+
+@pytest.mark.parametrize('uri', bad_uris)
+def test_base_bad_uri(capsys, uri):
+    context = new_context()
+    context = shell.base(context, uri)
+    (out, err) = capsys.readouterr()
+    assert out.index('Warning') == 0
 
 
 def test_prefix(capsys):
-    prefix_str = 's: http://example.org/stuff#'
+    prefix_str = 's: <http://example.org/stuff#>'
     context = new_context()
     context = shell.prefix(context, prefix_str)
     context = shell.prefix(context, '')
@@ -119,24 +123,62 @@ def test_prefix(capsys):
     assert out.index(prefix_str) >= 0
 
 
-@pytest.mark.skip(reason='TODO')
-def test_prefix_bad_prefix():
-    pass
+bad_prefixes = [('s'), ('s s'), ('_')]
 
 
-@pytest.mark.skip(reason='TODO')
-def test_prefix_bad_uri():
-    pass
+@pytest.mark.parametrize('prefix', bad_prefixes)
+def test_prefix_bad_prefix(capsys, prefix):
+    context = new_context()
+    context = shell.prefix(context, prefix + ' <http://example.org/stuff#>')
+    (out, err) = capsys.readouterr()
+    assert out.index('Warning') == 0
+
+
+@pytest.mark.parametrize('uri', bad_uris)
+def test_prefix_bad_uri(capsys, uri):
+    context = new_context()
+    context = shell.prefix(context, 'ex:' + uri)
+    (out, err) = capsys.readouterr()
+    assert out.index('Warning') == 0
 
 
 def test_parse(capsys):
     context = new_context()
     context = shell.parse(context, input_file)
-    assert len(context['graph']) == 25
+    assert len(context.graph) == input_file_count
+
+
+def test_parse_bad_format(capsys):
+    context = new_context()
+    context = shell.parse(context, input_file + ' text')
+    (out, err) = capsys.readouterr()
+    assert out.index('Warning') == 0
+
+
+def test_serialize(tmpdir):
+    p = tmpdir.mkdir("tests").join("sample_out.xml")
+    context = new_context()
+    context = shell.serialize(context, str(p) + ' xml')
+    written = p.read()
+    assert written.startswith('<?xml version="1.0" encoding="UTF-8"?>\n<rdf:RDF\n')  # noqa: 501
+    assert written.endswith('</rdf:RDF>\n')
+
+
+def test_show(capsys):
+    context = new_context()
+    context = shell.parse(context, input_file)
+    context = shell.show(context, 'nt')
+    (out, err) = capsys.readouterr()
+    lines = [line for line in out.split('\n')[1:] if not line == '']
+    assert len(lines) == input_file_count
+    for line in lines:
+        if not line == '':
+            assert line.startswith('<')
+            assert line.endswith('> .')
 
 
 @pytest.mark.skip(reason='TODO')
-def test_parse_bad_format():
+def test_query():
     pass
 
 
