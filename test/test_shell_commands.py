@@ -177,9 +177,26 @@ def test_show(capsys):
             assert line.endswith('> .')
 
 
-@pytest.mark.skip(reason='TODO')
-def test_query():
-    pass
+queries = [
+    ('SELECT DISTINCT ?type WHERE { ?s a ?type }',
+     'type', 3),
+    ('SELECT DISTINCT ?person ?topic WHERE { ?person <http://example.org/social/relationship/1.0/likes> ?topic. } ORDER BY ?person',  # noqa: 501
+     'person,topic', 3)
+]
+
+
+@pytest.mark.parametrize('query, cols, rows', queries)
+def test_query(capsys, query, cols, rows):
+    context = new_context()
+    context = shell.parse(context, input_file)
+    context = shell.query(context, query)
+    (out, err) = capsys.readouterr()
+    lines = [line for line in out.split('\n')[1:] if not line == '']
+    header = [col.strip() for col in lines[0].split('|')
+              if not col.strip() == '']
+    assert set(header) == set(cols.split(','))
+    assert set(lines[1]) == {'|', '='}
+    assert lines[-1].startswith('%d rows returned' % rows)
 
 
 def test_subjects(capsys):

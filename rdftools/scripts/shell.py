@@ -169,7 +169,6 @@ def serialize(context, args):
     if len(args2) >= 1:
         try:
             rdftools.write(context.graph, SimpleFile(args2[0]), format)
-            info(i18n.t('shell.invalid_params', name=args2[0]))
         except IOError as ex:
             exception(i18n.t('shell.file_write_err', err=ex))
     else:
