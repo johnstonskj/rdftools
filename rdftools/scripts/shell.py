@@ -212,22 +212,24 @@ def query(context, args):
     return context
 
 
+def graph_select(context, component):
+    for s in set(getattr(context.graph, component)()):
+        info(s)
+    return context
+
+
 @command
 def subjects(context, ignored):
     """ subjects
         Display subjects in current context."""
-    for s in set(context.graph.subjects()):
-        info(s)
-    return context
+    return graph_select(context, 'subjects')
 
 
 @command
 def predicates(context, ignored):
     """ predicates
         Display predicates in current context."""
-    for p in set(context.graph.predicates()):
-        info(p)
-    return context
+    return graph_select(context, 'predicates')
 
 
 @command

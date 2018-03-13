@@ -6,14 +6,20 @@ import rdftools
 def add_args(parser):
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-s', '--subjects', dest='select',
-                       const='s', action='store_const')
+                       const='subjects', action='store_const')
     group.add_argument('-p', '--predicates', dest='select',
-                       const='p', action='store_const')
+                       const='predicates', action='store_const')
     group.add_argument('-o', '--objects', dest='select',
-                       const='o', action='store_const')
+                       const='objects', action='store_const')
     group.add_argument('-t', '--types', dest='select',
-                       const='t', action='store_const')
+                       const='types', action='store_const')
     return parser
+
+
+def selector(LOG, graph, primary, **kwargs):
+    LOG.info(i18n.t('scripts.select_%s' % primary))
+    for v in set(getattr(graph, primary)(**kwargs)):
+        print(v)
 
 
 def main():
@@ -21,19 +27,7 @@ def main():
 
     graph = rdftools.read_all(cmd.input, cmd.read)
 
-    if cmd.select == 's':
-        LOG.info(i18n.t('scripts.select_subjects'))
-        for s in set(graph.subjects()):
-            print(s)
-    elif cmd.select == 'p':
-        LOG.info(i18n.t('scripts.select_predicates'))
-        for s in set(graph.predicates()):
-            print(s)
-    elif cmd.select == 'o':
-        LOG.info(i18n.t('scripts.select_objects'))
-        for s in set(graph.objects()):
-            print(s)
-    elif cmd.select == 't':
-        LOG.info(i18n.t('scripts.select_types'))
-        for s in set(graph.objects(predicate=RDF.type)):
-            print(s)
+    if cmd.select in ['subjects', 'predicates', 'objects']:
+        selector(LOG, graph, cmd.select)
+    elif cmd.select == 'types':
+        selector(LOG, graph, 'objects', predicate=RDF.type)
