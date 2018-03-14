@@ -175,12 +175,17 @@ def test_parse_no_file(capsys):
 
 
 def test_serialize(tmpdir):
+    expected_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+</rdf:RDF>
+"""
     p = tmpdir.mkdir("tests").join("sample_out.xml")
     context = new_context()
     context = shell.serialize(context, str(p) + ' xml')
     written = p.read()
-    assert written.startswith('<?xml version="1.0" encoding="UTF-8"?>\n<rdf:RDF\n')  # noqa: 501
-    assert written.endswith('</rdf:RDF>\n')
+    assert written == expected_xml
 
 
 def test_serialize_bad_file(capsys, tmpdir):
