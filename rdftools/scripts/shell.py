@@ -349,8 +349,6 @@ def parse_cmdfile(context, filename):
         for line in file:
             parse_input_line(context, line)
         file.close()
-    else:
-        warning(i18n.t('shell.no_file', name=filename))
 
 
 def parse_input_line(context, line):
