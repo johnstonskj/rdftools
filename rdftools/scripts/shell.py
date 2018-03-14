@@ -106,6 +106,18 @@ def base(context, args):
     return context
 
 
+def parse_prefix(pre):
+    if pre.endswith(':'):
+        pre = pre[:-1]
+        if pre == '' or pre.isalnum():
+            return pre
+        else:
+            warning(i18n.t('shell.invalid_prefix_char'))
+    else:
+        warning(i18n.t('shell.invalid_prefix'))
+    return None
+
+
 @command
 def prefix(context, args):
     """ prefix [pre: URI]
@@ -115,16 +127,10 @@ def prefix(context, args):
         for (pre, uri) in context.graph.namespaces():
             info('PREFIX %s: <%s>.' % (pre, uri))
     elif len(args2) == 2:
-        pre = args2[0].strip()
-        if pre.endswith(':'):
-            pre = pre[:-1]
-            if pre == '' or pre.isalnum():
-                uri = parse_uri(args2[1].strip())
-                context.graph.bind(pre, uri)
-            else:
-                warning(i18n.t('shell.invalid_prefix_char'))
-        else:
-            warning(i18n.t('shell.invalid_prefix'))
+        pre = parse_prefix(args2[0].strip())
+        if pre is not None:
+            uri = parse_uri(args2[1].strip())
+            context.graph.bind(pre, uri)
     else:
         warning(i18n.t('shell.invalid_param_num', count=2))
     return context

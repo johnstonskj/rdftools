@@ -12,6 +12,24 @@ expected_commands = ['!', 'base', 'clear', 'close', 'connect', 'context',
 rdftools.configure_translation(force_locale='en')
 
 
+def test_log_output(capsys):
+    expected_out = ['information message', 'warning message', 'error message',
+                    "exception message module 'rdftools.scripts.shell' has no attribute 'foo'",  # noqa: 501
+                    '']
+    log = rdftools.configure_logging('shell', 3)
+    shell.LOG = log
+    shell.info('information message')
+    shell.warning('warning message')
+    shell.error('error message')
+    try:
+        shell.foo()
+    except AttributeError as ex:
+        shell.exception('exception message', ex)
+    (out, err) = capsys.readouterr()
+    for num, line in enumerate(out.split('\n')):
+        assert line == expected_out[num]
+
+
 def new_context():
     return shell.clear(None, '')
 
