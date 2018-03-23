@@ -4,6 +4,7 @@ import logging
 import os
 import rdflib
 import sys
+from termcolor import colored
 from timeit import default_timer as timer
 
 __VERSION__ = '0.2.0'
@@ -12,9 +13,16 @@ __LOG__ = None
 
 FORMATS = ['nt', 'n3', 'turtle', 'rdfa', 'xml', 'pretty-xml']
 
+HEADER_SEP = '='
+COLUMN_SEP = '|'
+EMPTY_LINE = ''
+COLUMN_SPEC = '{:%d}'
+
+USE_COLOR = False
+
 
 def startup(description_key, add_args, read_files=True, argv=None):
-    global __LOG__
+    global __LOG__, USE_COLOR
     configure_translation()
     description = i18n.t(description_key)
     parser = configure_argparse(description, read_files)
@@ -24,6 +32,7 @@ def startup(description_key, add_args, read_files=True, argv=None):
         command = parser.parse_args()
     else:
         command = parser.parse_args(argv)
+    USE_COLOR = command.use_color
     process = parser.prog
     __LOG__ = configure_logging(process, command.verbose)
     __LOG__.info(i18n.t('rdftools.started', tool=process, name=description))
@@ -46,13 +55,14 @@ def configure_argparse(description, read_files=True):
         parser.add_argument('-i', '--input',
                             type=argparse.FileType('r'), nargs='*')
         parser.add_argument('-r', '--read', action='store', choices=FORMATS)
+    parser.add_argument('-c', '--use-color', action='store_true')
     return parser
 
 
 def configure_logging(name, level):
     global __LOG__
-    logging.basicConfig(format='%(asctime)-15s %(module)s.%(funcName)s' +
-                        '%(lineno)d [%(levelname)s] - %(message)s')
+    logging.basicConfig(format='%(asctime)-15s %(module)s.%(funcName)s:' +
+                        '%(lineno)d [%(levelname)s] %(message)s')
     logger = logging.getLogger(name)
     if level > 2:
         logger.setLevel(logging.INFO)
@@ -134,30 +144,39 @@ def get_terminal_width(default=80):
     return shutil.get_terminal_size((default, 20))[0]
 
 
-HEADER_SEP = '='
-COLUMN_SEP = '|'
-EMPTY_LINE = ''
-COLUMN_SPEC = '{:%d}'
+def header(str):
+    return colored(str, attrs=['reverse']) if USE_COLOR else str
+
+
+def line(str):
+    return colored(str, attrs=['dark']) if USE_COLOR else str
+
+
+def comment(str):
+    return colored(str, attrs=['dark']) if USE_COLOR else str
 
 
 def report(columns, rows, timer=0):
+    # TODO: Should also take this as a parameter? so "rdf query -c 80 -q ..."
     width = get_terminal_width()
     col_width = int((width - len(columns)) / len(columns))
     col_string = COLUMN_SPEC % col_width
     for column in columns:
-        print(col_string.format(column), end=COLUMN_SEP)
+        print(header(col_string.format(column)), end=line(COLUMN_SEP))
     print(EMPTY_LINE)
 
     for column in columns:
-        print(HEADER_SEP * col_width, end=COLUMN_SEP)
+        print(line(HEADER_SEP * col_width), end=line(COLUMN_SEP))
     print(EMPTY_LINE)
 
     for row in rows:
         for col in columns:
-            print(col_string.format(row[col]), end=COLUMN_SEP)
+            print(col_string.format(row[col]), end=line(COLUMN_SEP))
         print(EMPTY_LINE)
 
     if timer != 0:
-        print(i18n.t('rdftools.report_timed', len=len(rows), time=timer))
+        print(comment(i18n.t('rdftools.report_timed',
+                      len=len(rows), time=timer)))
     else:
-        print(i18n.t('rdftools.report_timed', len=len(rows)))
+        print(comment(i18n.t('rdftools.report_timed',
+                      len=len(rows))))

@@ -7,6 +7,7 @@ import os.path
 import readline
 import subprocess
 import sys
+from termcolor import colored, cprint
 from timeit import default_timer as timer
 
 import rdftools
@@ -37,13 +38,19 @@ def info(text):
 def warning(text):
     if LOG is not None:
         LOG.warning(text)
-    print(text)
+    if rdftools.USE_COLOR:
+        cprint(text, 'yellow')
+    else:
+        print(text)
 
 
 def error(text):
     if LOG is not None:
         LOG.error(text)
-    print(text)
+    if rdftools.USE_COLOR:
+        cprint(text, 'red')
+    else:
+        print(text)
 
 
 def exception(text, ex=None):
@@ -98,7 +105,10 @@ def base(context, args):
     args2 = args.strip().split()
     if len(args2) == 0:
         if context.base is not None:
-            info('BASE <%s>' % context.base)
+            if rdftools.USE_COLOR:
+                info('BASE <%s>' % colored(context.base, attrs=['underline']))
+            else:
+                info('BASE <%s>' % context.base)
     elif len(args2) >= 1:
         base = parse_uri(args2[0].strip())
         if base is not None:
@@ -125,7 +135,12 @@ def prefix(context, args):
     args2 = args.strip().split()
     if len(args2) == 0:
         for (pre, uri) in context.graph.namespaces():
-            info('PREFIX %s: <%s>.' % (pre, uri))
+            if rdftools.USE_COLOR:
+                info('PREFIX %s: <%s>.' %
+                     (colored(pre, attrs=['bold']),
+                      colored(uri, attrs=['underline'])))
+            else:
+                info('PREFIX %s: <%s>.' % (pre, uri))
     elif len(args2) == 2:
         pre = parse_prefix(args2[0].strip())
         if pre is not None:
