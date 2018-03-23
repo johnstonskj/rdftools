@@ -174,8 +174,10 @@ def parse(context, args):
                 SimpleFile(args2[0]), format,
                 context.graph, context.base)
             info(i18n.t('shell.graph_updated', len=len(context.graph)))
+        except SyntaxError as ex:
+            error(i18n.t('shell.file_read_err', err=ex))
         except IOError as ex:
-            exception(i18n.t('shell.file_read_err', err=ex))
+            error(i18n.t('shell.file_read_err', err=ex))
     else:
         warning(i18n.t('shell.invalid_params'))
     return context
