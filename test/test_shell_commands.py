@@ -13,9 +13,13 @@ rdftools.configure_translation(force_locale='en')
 
 
 def test_log_output(capsys):
-    expected_out = ['information message', 'warning message', 'error message',
-                    "exception message module 'rdftools.scripts.shell' has no attribute 'foo'",  # noqa: 501
-                    '']
+    expected_out = [
+        ('information message'),
+        ('warning message'),
+        ('error message'),
+        ("exception message module 'rdftools.scripts.shell' has no attribute 'foo'",  # noqa: 501
+         "exception message 'module' object has no attribute 'foo'"),
+        ('')]
     log = rdftools.configure_logging('shell', 3)
     shell.LOG = log
     shell.info('information message')
@@ -27,7 +31,7 @@ def test_log_output(capsys):
         shell.exception('exception message', ex)
     (out, err) = capsys.readouterr()
     for num, line in enumerate(out.split('\n')):
-        assert line == expected_out[num]
+        assert line in expected_out[num]
 
 
 def new_context():
