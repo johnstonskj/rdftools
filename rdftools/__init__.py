@@ -52,7 +52,7 @@ def configure_argparse(description, read_files=True):
     parser.add_argument('-v', '--verbose', default=0, action='count')
     parser.add_argument('-b', '--base', action='store')
     if read_files:
-        parser.add_argument('-i', '--input',
+        parser.add_argument('-i', '--input', metavar='FILE',
                             type=argparse.FileType('r'), nargs='*')
         parser.add_argument('-r', '--read', action='store', choices=FORMATS)
     parser.add_argument('-c', '--use-color', action='store_true')
