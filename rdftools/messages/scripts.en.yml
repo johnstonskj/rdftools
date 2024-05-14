@@ -3,7 +3,7 @@ en:
   rdf_command: "RDF tool(s)."
   rdf_call: "running command %{name} with command-line arguments %{params}."
 
-  convert_command: "RDF file converter.'"
+  convert_command: "RDF file converter."
 
   query_command: "SPARQL query."
   query_started: "executing query..."
