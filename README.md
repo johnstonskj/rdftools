@@ -16,6 +16,21 @@ The functionality is provided by RDFLib, and while that provides a set of comman
 [![Python Versions](https://img.shields.io/pypi/pyversions/rdftools.svg)](https://pypi.python.org/pypi/rdftools)
 [![Python Implementations](https://img.shields.io/pypi/implementation/rdftools.svg)](https://pypi.python.org/pypi/tdftools)
 
+## Installation
+
+Python developers will know other ways,
+but for the (more) laymen -
+as long as you have `git` and `pipx` installed -
+you can install like so (on Linux and Mac):
+
+```shell
+mkdir -p ~/src
+cd ~/src
+git clone "https://github.com/johnstonskj/rdftools.git"
+cd rdftools
+pipx install .
+```
+
 ## Usage
 
 The tooling uses a common starting command, `rdf`, that then executes sub-commands. As expected, the command has a help function and lists the supported sub-commands as _positional arguments_. These sub-commands also have their own help.
@@ -37,7 +52,7 @@ optional arguments:
 
 The currently supported sub-commands are as follows.
 
-* `convert` - convert files between different RDF representations (NTriples, Notation3, XML, ...).
+* `convert` - convert files between different RDF representations (NTriples, Notation3, RDF-XML, ...).
 * `query` - execute SPARQL queries over RDF files.
 * `select` - simple projections from RDF files.
 * `shell` - run an interactive shell session.
