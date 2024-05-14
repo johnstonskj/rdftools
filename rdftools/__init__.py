@@ -11,7 +11,7 @@ __VERSION__ = '0.2.0'
 
 __LOG__ = None
 
-FORMATS = ['nt', 'n3', 'turtle', 'rdfa', 'xml', 'pretty-xml']
+FORMATS = ['hext', 'json-ld', 'n3', 'nquads', 'nt', 'trig', 'trix', 'turtle', 'xml', 'pretty-xml']
 FORMAT_DEFAULT = 'turtle'
 
 HEADER_SEP = '='
