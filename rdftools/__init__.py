@@ -12,6 +12,7 @@ __VERSION__ = '0.2.0'
 __LOG__ = None
 
 FORMATS = ['nt', 'n3', 'turtle', 'rdfa', 'xml', 'pretty-xml']
+FORMAT_DEFAULT = 'turtle'
 
 HEADER_SEP = '='
 COLUMN_SEP = '|'
@@ -81,7 +82,7 @@ def read_into(input, format, graph, base=None):
     start = end = 0
     if format is None:
         if input is None:
-            format = FORMATS[0]
+            format = FORMAT_DEFAULT
         else:
             format = rdflib.util.guess_format(input.name)
     if input is None:
@@ -117,7 +118,7 @@ def write(graph, output, format, base=None):
     start = end = 0
     if format is None:
         if output is None:
-            format = FORMATS[0]
+            format = FORMAT_DEFAULT
         else:
             format = rdflib.util.guess_format(output.name)
     if output is None:
