@@ -28,13 +28,6 @@ def get_long_description(filename):
         return f.read()
 
 
-def get_requirements(filename):
-    requirements = []
-    with open(filename) as f:
-        requirements.append(f.read().splitlines())
-    return requirements
-
-
 NAME = 'rdftools'
 HERE = path.abspath(path.dirname(__file__))
 VERSION = find_version(path.join(HERE, ('%s/__init__.py' % NAME)))
@@ -67,6 +60,11 @@ setup(
     keywords='development, RDF',
     packages=PACKAGES,
     python_requires='>=3.3',
+    # NOTE While this is the same info as in 'requirements.txt',
+    #      we should still maintain them separately,
+    #      see <https://stackoverflow.com/questions/14399534/reference-requirements-txt-for-the-install-requires-kwarg-in-setuptools-setup-py>.
+    #      While we should maintain the minimum requried versions here,
+    #      we might want to promote more recent versions in 'requirements.txt'.
     install_requires=[
         'rdflib>=4.2',
         'python-i18n>=0.3',
