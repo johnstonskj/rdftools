@@ -44,7 +44,7 @@ LONG_DESCRIPTION = get_long_description(path.join(HERE, 'README.md'))
 setup(
     name=NAME,
     version=VERSION,
-    description='Command-line tools for RDF',
+    description='Command-line tools for RDF: conversion, validation, simple and SPARQL querries',
     long_description=LONG_DESCRIPTION,
     url='https://github.com/johnstonskj/%s' % NAME,
     author='Simon Johnston',
