@@ -41,8 +41,6 @@ VERSION = find_version(path.join(HERE, ('%s/__init__.py' % NAME)))
 PACKAGES = get_packages()
 LONG_DESCRIPTION = get_long_description(path.join(HERE, 'README.md'))
 
-# Arguments marked as "Required" below must be included for upload to PyPI.
-# Fields marked as "Optional" may be commented out.
 setup(
     name=NAME,
     version=VERSION,
