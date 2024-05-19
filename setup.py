@@ -15,7 +15,7 @@ def find_version(filename):
 
 def get_packages():
     """ Return a list of packages that represent the distributed source. """
-    packages = find_packages(exclude=['data', 'docs', 'test', 'examples'])
+    packages = find_packages(exclude=['data', 'docs', 'test', 'examples', 'venv'])
     if environ.get('READTHEDOCS', None):
         # if building docs for RTD, include examples to get docstrings
         packages.append('examples')
