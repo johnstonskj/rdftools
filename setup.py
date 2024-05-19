@@ -6,7 +6,7 @@ import re
 
 def find_version(filename):
     """ Find the embedded version string in the package source. """
-    _version_re = re.compile(r"__VERSION__ = '(.*)'")
+    _version_re = re.compile(r"__VERSION__ *= *'(.*)'", re.IGNORECASE)
     for line in open(filename):
         version_match = _version_re.match(line)
         if version_match:
