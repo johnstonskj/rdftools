@@ -43,7 +43,7 @@ setup(
     author='Simon Johnston',
     author_email='johnstonskj@gmail.com',
     license='MIT',
-    classifiers=[  # Optional
+    classifiers=[ # Optional
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
         'Intended Audience :: Developers',
@@ -80,7 +80,7 @@ setup(
     package_data={
         '': ['*.yml']
     },
-    entry_points={  # Optional
+    entry_points={ # Optional
         'console_scripts': [
             'rdf=rdftools.scripts.rdf:main',
             'rdf-convert=rdftools.scripts.convert:main',
