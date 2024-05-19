@@ -33,6 +33,7 @@ HERE = path.abspath(path.dirname(__file__))
 VERSION = find_version(path.join(HERE, ('%s/__init__.py' % NAME)))
 PACKAGES = get_packages()
 LONG_DESCRIPTION = get_long_description(path.join(HERE, 'README.md'))
+LICENSE = "MIT"
 
 setup(
     name=NAME,
@@ -42,12 +43,12 @@ setup(
     url='https://github.com/johnstonskj/%s' % NAME,
     author='Simon Johnston',
     author_email='johnstonskj@gmail.com',
-    license='MIT',
+    license=LICENSE,
     classifiers=[ # Optional
         'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
+        "License :: OSI Approved :: %s License" % LICENSE,
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
