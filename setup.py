@@ -41,7 +41,7 @@ setup(
     description='Command-line tools for RDF: conversion, validation, simple and SPARQL querries',
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    url='https://github.com/johnstonskj/%s' % NAME,
+    url='https://github.com/hoijui/%s' % NAME,
     author='Simon Johnston',
     author_email='johnstonskj@gmail.com',
     license=LICENSE,
