@@ -2,7 +2,7 @@
 
 CLI tools to validate, convert or query RDF files and SPARQL.
 
-The functionality is provided by RDFLib,
+The functionality is provided by [RDFLib],
 and while that provides a set of commands,
 those provided here are somewhat more extensive
 and also based upon a common command framework
@@ -206,6 +206,8 @@ add_command(echo)
 
 * [RDF Working Group](https://www.w3.org/2011/rdf-wg/wiki/Main_Page)
 * [SPARQL Overview](https://www.w3.org/TR/sparql11-overview/)
-* [RDFLib](https://github.com/RDFLib/rdflib)
+* [RDFLib]
 * [Travis Project](https://travis-ci.org/johnstonskj/rdftools)
 * [Coveralls Project](https://coveralls.io/github/johnstonskj/rdftools)
+
+[RDFLib]: https://github.com/RDFLib/rdflib
