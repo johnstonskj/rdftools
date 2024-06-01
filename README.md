@@ -12,22 +12,22 @@ that can be extended easily for more cases.
   https://travis-ci.org/johnstonskj/rdftools.svg?branch=master)](
   https://travis-ci.org/johnstonskj/rdftools)
 [![Coverage Status](
-  https://coveralls.io/repos/github/johnstonskj/rdftools/badge.svg?branch=master)](
-  https://coveralls.io/github/johnstonskj/rdftools?branch=master)
+  https://coveralls.io/repos/github/elevont/rdftools/badge.svg?branch=master)](
+  https://coveralls.io/github/elevont/rdftools?branch=master)
 [![Maintainability](
   https://api.codeclimate.com/v1/badges/713dc63ecf8f8efa44d7/maintainability)](
-  https://codeclimate.com/github/johnstonskj/rdftools/maintainability)
+  https://codeclimate.com/github/elevont/rdftools/maintainability)
 [![Requirements](
-  https://requires.io/github/johnstonskj/rdftools/requirements.svg?branch=master)](
-  https://requires.io/github/johnstonskj/rdftools/requirements/?branch=master)
+  https://requires.io/github/elevont/rdftools/requirements.svg?branch=master)](
+  https://requires.io/github/elevont/rdftools/requirements/?branch=master)
 <!--
 [![Doc Status](
   https://readthedocs.org/projects/rdftools/badge/?style=flat)](
   https://readthedocs.org/projects/rdftools)
 -->
 [![GitHub stars](
-  https://img.shields.io/github/stars/johnstonskj/rdftools.svg)](
-  https://github.com/johnstonskj/rdftools/stargazers)
+  https://img.shields.io/github/stars/elevont/rdftools.svg)](
+  https://github.com/elevont/rdftools/stargazers)
 [![Current Version](
   https://img.shields.io/pypi/v/rdftools.svg)](
   https://pypi.python.org/pypi/rdftools)
