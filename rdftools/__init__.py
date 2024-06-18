@@ -11,7 +11,8 @@ __VERSION__ = '0.2.0'
 
 __LOG__ = None
 
-FORMATS = ['nt', 'n3', 'turtle', 'rdfa', 'xml', 'pretty-xml']
+FORMATS = ['hext', 'json-ld', 'n3', 'nquads', 'nt', 'trig', 'trix', 'turtle', 'xml', 'pretty-xml']
+FORMAT_DEFAULT = 'turtle'
 
 HEADER_SEP = '='
 COLUMN_SEP = '|'
@@ -52,7 +53,7 @@ def configure_argparse(description, read_files=True):
     parser.add_argument('-v', '--verbose', default=0, action='count')
     parser.add_argument('-b', '--base', action='store')
     if read_files:
-        parser.add_argument('-i', '--input',
+        parser.add_argument('-i', '--input', metavar='FILE',
                             type=argparse.FileType('r'), nargs='*')
         parser.add_argument('-r', '--read', action='store', choices=FORMATS)
     parser.add_argument('-c', '--use-color', action='store_true')
@@ -81,7 +82,7 @@ def read_into(input, format, graph, base=None):
     start = end = 0
     if format is None:
         if input is None:
-            format = FORMATS[0]
+            format = FORMAT_DEFAULT
         else:
             format = rdflib.util.guess_format(input.name)
     if input is None:
@@ -117,7 +118,7 @@ def write(graph, output, format, base=None):
     start = end = 0
     if format is None:
         if output is None:
-            format = FORMATS[0]
+            format = FORMAT_DEFAULT
         else:
             format = rdflib.util.guess_format(output.name)
     if output is None:

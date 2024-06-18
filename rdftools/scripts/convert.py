@@ -5,8 +5,8 @@ import rdftools
 
 
 def add_args(parser):
-    parser.add_argument('-o', '--output', type=argparse.FileType('w'))
-    parser.add_argument('-w', '--write', action='store',
+    parser.add_argument('-o', '--output', metavar='FILE', type=argparse.FileType('w'))
+    parser.add_argument('-w', '--write', metavar='FORMAT', action='store',
                         choices=rdftools.FORMATS)
     return parser
 
